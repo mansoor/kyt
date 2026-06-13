@@ -61,7 +61,7 @@ export default function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full bg-white/5 border border-white/20 rounded-lg px-3 py-2.5 text-white placeholder-white/30 text-sm focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-colors"
-            placeholder="admin@kyt.local"
+            placeholder="admin@kyt.local or admin@teslamate.local"
           />
         </div>
 

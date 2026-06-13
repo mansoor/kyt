@@ -255,7 +255,7 @@ def upgrade() -> None:
     op.execute("INSERT INTO settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING")
 
     # ── Seed admin user ────────────────────────────────────────────────────────
-    admin_email = os.environ.get("INITIAL_ADMIN_EMAIL", "admin@teslamate.local")
+    admin_email = os.environ.get("INITIAL_ADMIN_EMAIL", "admin@kyt.local")
     admin_password = os.environ.get("INITIAL_ADMIN_PASSWORD", "changeme")
     hashed = bcrypt.hashpw(admin_password.encode(), bcrypt.gensalt(rounds=12)).decode()
     admin_id = str(uuid.uuid4())
