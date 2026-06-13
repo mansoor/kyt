@@ -18,7 +18,7 @@ export const useAuthStore = create<AuthStore>()(
       clearUser: () => set({ user: null, isAuthenticated: false }),
     }),
     {
-      name: 'teslamate-auth',
+      name: 'kyt-auth',
       storage: createJSONStorage(() => sessionStorage),
     },
   ),

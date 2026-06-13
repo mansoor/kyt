@@ -48,7 +48,7 @@ def create_app() -> FastAPI:
     from routers.public import router as public_router
 
     app = FastAPI(
-        title="TeslaMate Rebuild API",
+        title="Know Your Tesla (KYT) API",
         version="1.0.0",
         docs_url="/api/docs",
         redoc_url="/api/redoc",

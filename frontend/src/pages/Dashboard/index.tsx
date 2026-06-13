@@ -21,7 +21,7 @@ export default function DashboardPage() {
           <div className="w-7 h-7 rounded-lg bg-brand-red flex items-center justify-center">
             <Zap className="w-4 h-4 text-white fill-white" />
           </div>
-          <span className="text-white font-bold text-lg">TeslaMate</span>
+          <span className="text-white font-bold text-lg">Know Your Tesla</span>
         </div>
         <div className="flex items-center gap-4">
           <span className="text-white/60 text-sm">{user?.email}</span>
@@ -41,7 +41,7 @@ export default function DashboardPage() {
           <Zap className="w-9 h-9 text-brand-blue fill-brand-blue" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 mb-2">Welcome to TeslaMate</h1>
+          <h1 className="text-2xl font-bold text-neutral-900 mb-2">Welcome to Know Your Tesla</h1>
           <p className="text-neutral-500 max-w-md">
             Phase 1 complete — authentication and infrastructure are live.
             Connect a Tesla vehicle in <strong>Settings</strong> to start collecting data.

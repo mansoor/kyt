@@ -43,10 +43,10 @@ export default function LoginForm() {
         <div className="w-8 h-8 rounded-lg bg-brand-red flex items-center justify-center">
           <Zap className="w-5 h-5 text-white fill-white" />
         </div>
-        <span className="text-white text-xl font-bold tracking-tight">TeslaMate</span>
+        <span className="text-white text-xl font-bold tracking-tight">Know Your Tesla</span>
       </div>
 
-      <h1 className="text-white text-center text-lg font-semibold mb-6">Sign in</h1>
+      <h1 className="text-white text-center text-lg font-semibold mb-6">Sign in to KYT</h1>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
@@ -61,7 +61,7 @@ export default function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full bg-white/5 border border-white/20 rounded-lg px-3 py-2.5 text-white placeholder-white/30 text-sm focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-colors"
-            placeholder="admin@teslamate.local"
+            placeholder="admin@kyt.local"
           />
         </div>
 
