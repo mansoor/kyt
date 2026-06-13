@@ -13,7 +13,7 @@ FROM node:20-alpine AS development
 
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 COPY . .
 EXPOSE 5173
