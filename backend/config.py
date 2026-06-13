@@ -16,6 +16,7 @@ class Settings(BaseSettings):
 
     TESLA_CLIENT_ID: str = ""
     TESLA_CLIENT_SECRET: str = ""
+    TESLA_REDIRECT_URI: str = ""   # override auto-detected redirect URI if behind a custom domain
 
     MQTT_HOST: str = "mosquitto"
     MQTT_PORT: int = 1883

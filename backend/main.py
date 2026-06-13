@@ -40,12 +40,18 @@ def run_migrations() -> None:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     run_migrations()
+    from services.poller import poller
+    poller.start()
+    logger.info("Poller started.")
     yield
+    poller.stop()
+    logger.info("Poller stopped.")
 
 
 def create_app() -> FastAPI:
     from routers.auth import router as auth_router
     from routers.public import router as public_router
+    from routers.tesla import router as tesla_router
 
     app = FastAPI(
         title="Know Your Tesla (KYT) API",
@@ -83,6 +89,7 @@ def create_app() -> FastAPI:
 
     app.include_router(auth_router, prefix="/api")
     app.include_router(public_router, prefix="/api")
+    app.include_router(tesla_router, prefix="/api")
 
     @app.get("/health", tags=["system"])
     async def health():
