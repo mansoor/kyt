@@ -22,6 +22,8 @@
     X-Content-Type-Options "nosniff"
     Referrer-Policy "strict-origin-when-cross-origin"
     Permissions-Policy "geolocation=(), camera=(), microphone=()"
+    # CSP: allow OSM tiles + unpkg for Leaflet icons, no inline scripts except Vite's
+    Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.tile.openstreetmap.org https://unpkg.com; connect-src 'self'; font-src 'self'; frame-ancestors 'none'"
     -Server
   }
 }
@@ -43,6 +45,7 @@
 #     Strict-Transport-Security "max-age=31536000; includeSubDomains"
 #     Referrer-Policy "strict-origin-when-cross-origin"
 #     Permissions-Policy "geolocation=(), camera=(), microphone=()"
+#     Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.tile.openstreetmap.org https://unpkg.com; connect-src 'self'; font-src 'self'; frame-ancestors 'none'"
 #     -Server
 #   }
 # }
