@@ -49,6 +49,7 @@ async def lifespan(app: FastAPI):
 
 
 def create_app() -> FastAPI:
+    from routers.analytics import router as analytics_router
     from routers.auth import router as auth_router
     from routers.charges import router as charges_router
     from routers.dashboard import router as dashboard_router
@@ -96,6 +97,7 @@ def create_app() -> FastAPI:
     app.include_router(dashboard_router, prefix="/api")
     app.include_router(drives_router, prefix="/api")
     app.include_router(charges_router, prefix="/api")
+    app.include_router(analytics_router, prefix="/api")
 
     @app.get("/health", tags=["system"])
     async def health():

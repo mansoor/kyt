@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Zap, LayoutDashboard, Car, BatteryCharging, Settings, LogOut } from 'lucide-react'
+import { Zap, LayoutDashboard, Car, BatteryCharging, BarChart2, Settings, LogOut } from 'lucide-react'
 import { logout } from '@/api/auth'
 import { useAuthStore } from '@/store/authStore'
 
@@ -8,6 +8,7 @@ const NAV = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/drives', label: 'Drives', icon: Car },
   { to: '/charges', label: 'Charges', icon: BatteryCharging },
+  { to: '/analytics', label: 'Analytics', icon: BarChart2 },
 ]
 
 export default function AppShell({ children }: { children: ReactNode }) {

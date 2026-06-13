@@ -8,6 +8,7 @@ import DrivesPage from '@/pages/Drives'
 import DriveDetailPage from '@/pages/Drives/DriveDetail'
 import ChargesPage from '@/pages/Charges'
 import ChargeDetailPage from '@/pages/Charges/ChargeDetail'
+import AnalyticsPage from '@/pages/Analytics'
 
 const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
   {
     path: '/charges/:id',
     element: <ProtectedRoute><ChargeDetailPage /></ProtectedRoute>,
+  },
+  {
+    path: '/analytics',
+    element: <ProtectedRoute><AnalyticsPage /></ProtectedRoute>,
   },
   { path: '*', element: <Navigate to="/" replace /> },
 ])
