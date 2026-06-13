@@ -1,0 +1,37 @@
+services:
+  db:
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./backend
+      target: development
+    volumes:
+      - ./backend:/app
+    environment:
+      LOG_LEVEL: DEBUG
+      CORS_ORIGINS: "http://localhost:5173,http://localhost:3000"
+    ports:
+      - "8000:8000"
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      target: development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: npm run dev -- --host 0.0.0.0
+
+  proxy:
+    volumes:
+      - ./Caddyfile.dev:/etc/caddy/Caddyfile:ro
+
+  mosquitto:
+    ports:
+      - "1883:1883"
+      - "9001:9001"
