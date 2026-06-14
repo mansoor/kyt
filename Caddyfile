@@ -6,7 +6,12 @@
 # Local HTTP (home server / LAN access without domain)
 :80 {
   handle /api/* {
-    reverse_proxy backend:8000
+    reverse_proxy backend:8000 {
+      # Pass the original protocol through so the backend can build correct URLs
+      # when behind Cloudflare or Traefik (which terminate TLS before us).
+      header_up X-Forwarded-Proto {http.request.header.X-Forwarded-Proto}
+      header_up X-Forwarded-Host {http.request.header.X-Forwarded-Host}
+    }
   }
 
   handle /health {

@@ -28,8 +28,14 @@ _pending_auth: dict[str, tuple[str, str]] = {}  # state → (code_verifier, user
 
 
 def _redirect_uri(request: Request) -> str:
-    base = str(request.base_url).rstrip("/")
-    return f"{base}/api/tesla/auth/callback"
+    # Prefer explicit env var (required when behind a TLS-terminating proxy like
+    # Cloudflare or Traefik — request.base_url will be http:// in that case).
+    if settings.TESLA_REDIRECT_URI:
+        return settings.TESLA_REDIRECT_URI
+    # Fall back to auto-detection; honour X-Forwarded-Proto set by the proxy.
+    proto = request.headers.get("x-forwarded-proto", request.url.scheme)
+    host = request.headers.get("x-forwarded-host", request.headers.get("host", request.url.netloc))
+    return f"{proto}://{host}/api/tesla/auth/callback"
 
 
 # ── Auth flow ──────────────────────────────────────────────────────────────────
