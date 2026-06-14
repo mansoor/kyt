@@ -51,6 +51,12 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/ > /dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
 
   proxy:
     image: caddy:2-alpine
@@ -63,8 +69,10 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      - frontend
-      - backend
+      frontend:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
 
   mosquitto:
     image: eclipse-mosquitto:2
