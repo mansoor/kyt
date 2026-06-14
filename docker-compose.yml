@@ -28,6 +28,7 @@ services:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY:?ENCRYPTION_KEY is required}
       TESLA_CLIENT_ID: ${TESLA_CLIENT_ID:-}
       TESLA_CLIENT_SECRET: ${TESLA_CLIENT_SECRET:-}
+      TESLA_FLEET_BASE: ${TESLA_FLEET_BASE:-https://fleet-api.prd.na.vn.cloud.tesla.com}
       MQTT_HOST: ${MQTT_HOST:-mosquitto}
       MQTT_PORT: ${MQTT_PORT:-1883}
       MQTT_USERNAME: ${MQTT_USERNAME:-}

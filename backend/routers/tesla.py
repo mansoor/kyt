@@ -104,6 +104,49 @@ async def oauth_callback(
     return {"status": "connected", "message": "Tesla account connected successfully"}
 
 
+@router.post("/auth/register")
+async def register_partner_account(
+    current_user=Depends(get_current_user),
+):
+    """
+    One-time call to register this app with Tesla's Fleet API.
+    Must be run after hosting the public key at /.well-known/appspecific/com.tesla.3p.public-key.pem.
+    Uses client credentials (app-level token, not user token) to POST to /partner_accounts.
+    """
+    if not settings.TESLA_CLIENT_ID or not settings.TESLA_CLIENT_SECRET:
+        raise HTTPException(400, "TESLA_CLIENT_ID and TESLA_CLIENT_SECRET must be set")
+
+    import httpx
+    fleet_base = settings.TESLA_FLEET_BASE
+
+    # Step 1: get a client credentials token (app-level, not user OAuth)
+    async with httpx.AsyncClient(timeout=30) as http:
+        token_resp = await http.post(
+            "https://auth.tesla.com/oauth2/v3/token",
+            json={
+                "grant_type": "client_credentials",
+                "client_id": settings.TESLA_CLIENT_ID,
+                "client_secret": settings.TESLA_CLIENT_SECRET,
+                "scope": "openid vehicle_device_data vehicle_cmds vehicle_charging_cmds",
+                "audience": fleet_base,
+            },
+        )
+        if token_resp.status_code != 200:
+            raise HTTPException(502, f"Failed to get partner token: {token_resp.text}")
+        partner_token = token_resp.json().get("access_token")
+
+        # Step 2: register the partner account (Tesla fetches the public key from your domain)
+        reg_resp = await http.post(
+            f"{fleet_base}/api/1/partner_accounts",
+            headers={"Authorization": f"Bearer {partner_token}"},
+            json={"domain": settings.TESLA_REDIRECT_URI.split("/")[2] if settings.TESLA_REDIRECT_URI else ""},
+        )
+
+    if reg_resp.status_code in (200, 204):
+        return {"status": "registered", "detail": reg_resp.json() if reg_resp.content else {}}
+    raise HTTPException(reg_resp.status_code, f"Tesla registration failed: {reg_resp.text}")
+
+
 @router.delete("/auth/disconnect", status_code=204)
 async def disconnect(
     current_user=Depends(get_current_user),
