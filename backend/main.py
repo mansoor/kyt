@@ -3,7 +3,8 @@ import subprocess
 import sys
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -11,6 +12,7 @@ from slowapi.middleware import SlowAPIMiddleware
 from slowapi.util import get_remote_address
 
 from config import settings
+from database import get_db
 
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO),
@@ -110,6 +112,18 @@ def create_app() -> FastAPI:
     @app.get("/health", tags=["system"])
     async def health():
         return {"status": "ok", "version": "1.0.0"}
+
+    from fastapi import HTTPException as _HTTPException
+    from fastapi.responses import PlainTextResponse
+    from sqlalchemy import select as sa_select
+    from models.settings import Settings
+
+    @app.get("/.well-known/appspecific/com.tesla.3p.public-key.pem", include_in_schema=False)
+    async def tesla_public_key(db: AsyncSession = Depends(get_db)):
+        row = (await db.execute(sa_select(Settings).where(Settings.id == 1))).scalar_one_or_none()
+        if row and row.tesla_public_key:
+            return PlainTextResponse(row.tesla_public_key, media_type="application/x-pem-file")
+        raise _HTTPException(404, "Public key not configured — run Tesla setup first")
 
     return app
 

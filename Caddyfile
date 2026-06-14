@@ -5,13 +5,9 @@
 
 # Local HTTP (home server / LAN access without domain)
 :80 {
-  # Tesla Fleet API requires the app's public key at this exact path.
-  # Drop com.tesla.3p.public-key.pem into the .well-known/appspecific/ directory.
+  # Tesla Fleet API public key — served dynamically by the backend (generated via UI setup).
   handle /.well-known/appspecific/com.tesla.3p.public-key.pem {
-    rewrite * /com.tesla.3p.public-key.pem
-    root * /srv/tesla
-    file_server
-    header Content-Type "application/x-pem-file"
+    reverse_proxy backend:8000
   }
 
   handle /api/* {
@@ -45,10 +41,7 @@
 # Uncomment and replace with your domain for HTTPS:
 # yourdomain.com {
 #   handle /.well-known/appspecific/com.tesla.3p.public-key.pem {
-#     rewrite * /com.tesla.3p.public-key.pem
-#     root * /srv/tesla
-#     file_server
-#     header Content-Type "application/x-pem-file"
+#     reverse_proxy backend:8000
 #   }
 #   handle /api/* {
 #     reverse_proxy backend:8000 {

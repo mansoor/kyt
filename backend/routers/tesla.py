@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from config import settings
 from database import get_db
 from models.car import Car
+from models.settings import Settings
 from models.tesla_token import TeslaToken
 from routers.auth import get_current_user
 from services.encryption import decrypt, encrypt
@@ -104,22 +105,71 @@ async def oauth_callback(
     return {"status": "connected", "message": "Tesla account connected successfully"}
 
 
-@router.post("/auth/register")
-async def register_partner_account(
+@router.get("/auth/setup-status")
+async def setup_status(
     current_user=Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Return current state of Fleet API setup."""
+    row = (await db.execute(select(Settings).where(Settings.id == 1))).scalar_one_or_none()
+    return {
+        "configured": bool(settings.TESLA_CLIENT_ID and settings.TESLA_CLIENT_SECRET),
+        "keys_generated": bool(row and row.tesla_public_key),
+        "registered": bool(row and row.tesla_registered),
+    }
+
+
+@router.post("/auth/setup")
+async def setup_fleet_api(
+    request: Request,
+    current_user=Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
 ):
     """
-    One-time call to register this app with Tesla's Fleet API.
-    Must be run after hosting the public key at /.well-known/appspecific/com.tesla.3p.public-key.pem.
-    Uses client credentials (app-level token, not user token) to POST to /partner_accounts.
+    One-click Fleet API setup:
+    1. Generate EC key pair, store in DB (private key encrypted).
+    2. POST to /partner_accounts so Tesla fetches the public key and registers the app.
+    Idempotent — safe to call again if registration previously failed.
     """
-    if not settings.TESLA_CLIENT_ID or not settings.TESLA_CLIENT_SECRET:
-        raise HTTPException(400, "TESLA_CLIENT_ID and TESLA_CLIENT_SECRET must be set")
-
     import httpx
-    fleet_base = settings.TESLA_FLEET_BASE
+    from cryptography.hazmat.primitives import serialization
+    from cryptography.hazmat.primitives.asymmetric import ec
 
-    # Step 1: get a client credentials token (app-level, not user OAuth)
+    if not settings.TESLA_CLIENT_ID or not settings.TESLA_CLIENT_SECRET:
+        raise HTTPException(400, "TESLA_CLIENT_ID and TESLA_CLIENT_SECRET must be set in .env")
+
+    row = (await db.execute(select(Settings).where(Settings.id == 1))).scalar_one_or_none()
+    if not row:
+        raise HTTPException(500, "Settings row not found — run migrations first")
+
+    # Step 1: generate key pair if not already done
+    if not row.tesla_public_key:
+        private_key = ec.generate_private_key(ec.PRIME256V1())
+        pub_pem = private_key.public_key().public_bytes(
+            serialization.Encoding.PEM,
+            serialization.PublicFormat.SubjectPublicKeyInfo,
+        ).decode()
+        priv_pem = private_key.private_bytes(
+            serialization.Encoding.PEM,
+            serialization.PrivateFormat.TraditionalOpenSSL,
+            serialization.NoEncryption(),
+        ).decode()
+        row.tesla_public_key = pub_pem
+        row.tesla_private_key_enc = encrypt(priv_pem)
+        await db.commit()
+        await db.refresh(row)
+        logger.info("Tesla EC key pair generated and stored.")
+
+    # Step 2: register with Tesla (fetch client credentials token then POST /partner_accounts)
+    fleet_base = settings.TESLA_FLEET_BASE
+    proto = request.headers.get("x-forwarded-proto", request.url.scheme)
+    host = request.headers.get("x-forwarded-host", request.headers.get("host", request.url.netloc))
+    if settings.TESLA_REDIRECT_URI:
+        parts = settings.TESLA_REDIRECT_URI.split("/")
+        domain = parts[2]
+    else:
+        domain = host
+
     async with httpx.AsyncClient(timeout=30) as http:
         token_resp = await http.post(
             "https://auth.tesla.com/oauth2/v3/token",
@@ -135,16 +185,19 @@ async def register_partner_account(
             raise HTTPException(502, f"Failed to get partner token: {token_resp.text}")
         partner_token = token_resp.json().get("access_token")
 
-        # Step 2: register the partner account (Tesla fetches the public key from your domain)
         reg_resp = await http.post(
             f"{fleet_base}/api/1/partner_accounts",
             headers={"Authorization": f"Bearer {partner_token}"},
-            json={"domain": settings.TESLA_REDIRECT_URI.split("/")[2] if settings.TESLA_REDIRECT_URI else ""},
+            json={"domain": domain},
         )
 
-    if reg_resp.status_code in (200, 204):
-        return {"status": "registered", "detail": reg_resp.json() if reg_resp.content else {}}
-    raise HTTPException(reg_resp.status_code, f"Tesla registration failed: {reg_resp.text}")
+    if reg_resp.status_code not in (200, 201, 204):
+        raise HTTPException(reg_resp.status_code, f"Tesla registration failed: {reg_resp.text}")
+
+    row.tesla_registered = True
+    await db.commit()
+    logger.info("Tesla Fleet API partner registration complete.")
+    return {"status": "ok", "keys_generated": True, "registered": True}
 
 
 @router.delete("/auth/disconnect", status_code=204)

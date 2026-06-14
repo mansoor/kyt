@@ -31,3 +31,18 @@ export async function getVehicles(): Promise<Vehicle[]> {
 export async function wakeVehicle(carId: number): Promise<void> {
   await client.post(`/tesla/vehicles/${carId}/wake`)
 }
+
+export interface SetupStatus {
+  configured: boolean
+  keys_generated: boolean
+  registered: boolean
+}
+
+export async function getSetupStatus(): Promise<SetupStatus> {
+  const { data } = await client.get<SetupStatus>('/tesla/auth/setup-status')
+  return data
+}
+
+export async function runSetup(): Promise<void> {
+  await client.post('/tesla/auth/setup')
+}
