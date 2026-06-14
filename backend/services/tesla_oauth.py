@@ -14,6 +14,10 @@ TESLA_AUTH_BASE = "https://auth.tesla.com/oauth2/v3"
 TESLA_SCOPES = "openid email offline_access vehicle_device_data vehicle_cmds vehicle_charging_cmds"
 
 
+def _fleet_audience() -> str:
+    return settings.TESLA_FLEET_BASE
+
+
 def _pkce_pair() -> tuple[str, str]:
     verifier = base64.urlsafe_b64encode(os.urandom(48)).rstrip(b"=").decode()
     digest = hashlib.sha256(verifier.encode()).digest()
@@ -33,6 +37,7 @@ def build_auth_url(redirect_uri: str) -> tuple[str, str, str]:
         "code_challenge": challenge,
         "code_challenge_method": "S256",
         "state": state,
+        "audience": _fleet_audience(),
     }
     return f"{TESLA_AUTH_BASE}/authorize?{urlencode(params)}", verifier, state
 

@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     TESLA_CLIENT_ID: str = ""
     TESLA_CLIENT_SECRET: str = ""
     TESLA_REDIRECT_URI: str = ""   # override auto-detected redirect URI if behind a custom domain
+    # Regional Fleet API base — na (default), eu, or cn
+    TESLA_FLEET_BASE: str = "https://fleet-api.prd.na.vn.cloud.tesla.com"
 
     MQTT_HOST: str = "mosquitto"
     MQTT_PORT: int = 1883
