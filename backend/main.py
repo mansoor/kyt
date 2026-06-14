@@ -24,16 +24,22 @@ limiter = Limiter(key_func=get_remote_address, default_limits=["120/minute"])
 
 
 def run_migrations() -> None:
-    logger.info("Running Alembic migrations…")
-    result = subprocess.run(
-        ["alembic", "upgrade", "head"],
-        capture_output=True,
-        text=True,
-        cwd="/app",
-    )
-    if result.returncode != 0:
-        logger.error("Migration failed:\n%s", result.stderr)
-        raise RuntimeError("Alembic migration failed")
+    import time
+    max_attempts = 10
+    for attempt in range(1, max_attempts + 1):
+        logger.info("Running Alembic migrations… (attempt %d/%d)", attempt, max_attempts)
+        result = subprocess.run(
+            ["alembic", "upgrade", "head"],
+            capture_output=True,
+            text=True,
+            cwd="/app",
+        )
+        if result.returncode == 0:
+            break
+        logger.warning("Migration attempt %d failed:\n%s", attempt, result.stderr)
+        if attempt == max_attempts:
+            raise RuntimeError("Alembic migration failed after %d attempts" % max_attempts)
+        time.sleep(3 * attempt)  # back-off: 3s, 6s, 9s, …
     logger.info("Migrations complete.")
 
 
