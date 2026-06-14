@@ -20,7 +20,8 @@ client.interceptors.response.use(
   async (error: AxiosError) => {
     const original = error.config as typeof error.config & { _retry?: boolean }
 
-    if (error.response?.status === 401 && !original?._retry) {
+    const isRefreshCall = original?.url?.includes('/auth/refresh')
+    if (error.response?.status === 401 && !original?._retry && !isRefreshCall) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({
