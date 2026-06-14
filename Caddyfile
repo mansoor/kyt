@@ -8,6 +8,7 @@
   # Tesla Fleet API requires the app's public key at this exact path.
   # Drop com.tesla.3p.public-key.pem into the .well-known/appspecific/ directory.
   handle /.well-known/appspecific/com.tesla.3p.public-key.pem {
+    rewrite * /com.tesla.3p.public-key.pem
     root * /srv/tesla
     file_server
     header Content-Type "application/x-pem-file"
@@ -44,6 +45,7 @@
 # Uncomment and replace with your domain for HTTPS:
 # yourdomain.com {
 #   handle /.well-known/appspecific/com.tesla.3p.public-key.pem {
+#     rewrite * /com.tesla.3p.public-key.pem
 #     root * /srv/tesla
 #     file_server
 #     header Content-Type "application/x-pem-file"
