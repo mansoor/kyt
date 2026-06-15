@@ -18,6 +18,7 @@ from models.drive import Drive
 from models.position import Position
 from models.state import State
 from models.tesla_token import TeslaToken
+from services import alerts
 from services.encryption import decrypt, encrypt
 from services.tesla_api import TeslaAPIClient, TeslaAPIError
 from services.tesla_oauth import parse_expiry, refresh_tokens
@@ -40,6 +41,7 @@ IDLE_SLEEP_THRESHOLD = 15 * 60  # 15 min idle → allow sleep
 class CarState:
     car_id: int
     vehicle_id: int                      # Tesla's vehicle_id (vid)
+    car_name: str | None = None
     poller_state: str = "online"         # asleep/online/driving/charging/updating
     current_drive_id: int | None = None
     current_charge_id: int | None = None
@@ -47,6 +49,7 @@ class CarState:
     last_battery_level: int | None = None
     last_latitude: float | None = None
     last_longitude: float | None = None
+    last_geofence: Any = None            # Geofence | None — for enter/exit detection
 
 
 class Poller:
@@ -128,7 +131,7 @@ class Poller:
         return decrypt(token_row.access_token)
 
     async def _start_car(self, car: Car, access_token: str) -> None:
-        state = CarState(car_id=car.id, vehicle_id=car.vid)
+        state = CarState(car_id=car.id, vehicle_id=car.vid, car_name=car.name)
         self._states[car.id] = state
         logger.info("Starting poller for car %s (vid=%s)", car.id, car.vid)
         self._schedule_poll(car.id, delay=0)
@@ -210,18 +213,37 @@ class Poller:
         # Write position row
         await self._write_position(db, state, drive, charge, climate, vehicle)
 
+        # Position-based alerts: battery, speed, geofence enter/exit
+        lat, lon = drive.get("latitude"), drive.get("longitude")
+        await self._safe_alert(alerts.on_battery_level(
+            db, state.car_id, state.car_name, state.last_battery_level, charge.get("battery_level")))
+        await self._safe_alert(alerts.on_speed(
+            db, state.car_id, state.car_name, _miles_to_km(drive.get("speed"))))
+        try:
+            current_fence = await alerts.nearest_geofence(db, lat, lon)
+            await alerts.on_geofence_change(db, state.car_id, state.car_name, state.last_geofence, current_fence)
+            state.last_geofence = current_fence
+        except Exception as exc:
+            logger.warning("Geofence alert failed: %s", exc)
+
         # State machine transitions
         if state.poller_state == "online":
             if is_installing:
                 await self._transition(db, state, "updating")
+                await self._safe_alert(alerts.on_software_update(
+                    db, state.car_id, state.car_name, sw_update.get("version")))
             elif shift_state in ("D", "R", "N"):
-                drive_id = await self._start_drive(db, state, drive, charge)
+                drive_id = await self._start_drive(db, state, drive, charge, vehicle)
                 state.current_drive_id = drive_id
                 await self._transition(db, state, "driving")
+                await self._safe_alert(alerts.on_drive_started(
+                    db, state.car_id, state.car_name, datetime.now(timezone.utc)))
             elif charging_state == "Charging":
                 charge_id = await self._start_charge(db, state, charge, vehicle)
                 state.current_charge_id = charge_id
                 await self._transition(db, state, "charging")
+                await self._safe_alert(alerts.on_charge_started(
+                    db, state.car_id, state.car_name, charge.get("battery_level")))
             else:
                 idle_secs = (datetime.now(timezone.utc) - state.last_active_at).total_seconds()
                 if idle_secs > IDLE_SLEEP_THRESHOLD:
@@ -229,9 +251,11 @@ class Poller:
 
         elif state.poller_state == "driving":
             if shift_state == "P" or shift_state is None:
-                await self._end_drive(db, state, drive, charge)
+                drive_id = state.current_drive_id
+                await self._end_drive(db, state, drive, charge, vehicle)
                 state.current_drive_id = None
                 await self._transition(db, state, "online")
+                await self._safe_alert(self._alert_drive_completed(db, state, drive_id))
             else:
                 state.last_active_at = datetime.now(timezone.utc)
 
@@ -240,6 +264,9 @@ class Poller:
                 await self._end_charge(db, state, charge)
                 state.current_charge_id = None
                 await self._transition(db, state, "online")
+                await self._safe_alert(alerts.on_charge_stopped(
+                    db, state.car_id, state.car_name,
+                    charge.get("battery_level"), charge.get("charge_energy_added")))
             else:
                 await self._write_charge_reading(db, state, charge)
                 state.last_active_at = datetime.now(timezone.utc)
@@ -254,6 +281,29 @@ class Poller:
         self._mqtt_publish(state.car_id, "state", state.poller_state)
         if batt is not None:
             state.last_battery_level = batt
+
+    # ── Alerts (best-effort; never break polling) ──────────────────────────────
+
+    async def _safe_alert(self, coro) -> None:
+        try:
+            await coro
+        except Exception as exc:
+            logger.warning("Alert evaluation failed: %s", exc)
+
+    async def _alert_drive_completed(self, db, state: CarState, drive_id: int | None) -> None:
+        if not drive_id:
+            return
+        d = (await db.execute(select(Drive).where(Drive.id == drive_id))).scalar_one_or_none()
+        if d is None:
+            return
+        distance = None
+        if d.start_km is not None and d.end_km is not None:
+            distance = round(d.end_km - d.start_km, 1)
+        duration = None
+        if d.start_date and d.end_date:
+            duration = int((d.end_date - d.start_date).total_seconds() // 60)
+        await alerts.on_drive_completed(
+            db, state.car_id, state.car_name, distance, duration, d.consumption_kWh)
 
     # ── State transitions ─────────────────────────────────────────────────────
 
@@ -325,13 +375,13 @@ class Poller:
 
     # ── Drive start/end ───────────────────────────────────────────────────────
 
-    async def _start_drive(self, db, state: CarState, drive: dict, charge: dict) -> int:
+    async def _start_drive(self, db, state: CarState, drive: dict, charge: dict, vehicle: dict) -> int:
         now = datetime.now(timezone.utc)
         d = Drive(
             car_id=state.car_id,
             start_date=now,
             start_ideal_range_km=_miles_to_km(charge.get("ideal_battery_range")),
-            start_km=_miles_to_km(drive.get("odometer")),
+            start_km=_miles_to_km(vehicle.get("odometer")),
             outside_temp_avg=None,
         )
         db.add(d)
@@ -339,20 +389,48 @@ class Poller:
         await db.commit()
         return d.id
 
-    async def _end_drive(self, db, state: CarState, drive: dict, charge: dict) -> None:
+    async def _end_drive(self, db, state: CarState, drive: dict, charge: dict, vehicle: dict) -> None:
         if not state.current_drive_id:
             return
         now = datetime.now(timezone.utc)
+        # Load the open drive so we can derive distance / duration / consumption.
+        d = (await db.execute(select(Drive).where(Drive.id == state.current_drive_id))).scalar_one_or_none()
+        end_km = _miles_to_km(vehicle.get("odometer"))
+        end_ideal = _miles_to_km(charge.get("ideal_battery_range"))
+
+        distance = None
+        if d is not None and d.start_km is not None and end_km is not None:
+            distance = round(end_km - d.start_km, 2)
+        duration_min = None
+        if d is not None and d.start_date is not None:
+            duration_min = max(0, int((now - d.start_date).total_seconds() // 60))
+        consumption = None
+        if d is not None and d.start_ideal_range_km is not None and end_ideal is not None:
+            # Approximate energy used from ideal-range drop × the car's efficiency (Wh/km).
+            range_drop = d.start_ideal_range_km - end_ideal
+            if state.car_id and range_drop is not None:
+                eff = await self._car_efficiency(db, state.car_id)
+                if eff:
+                    consumption = round(max(0.0, range_drop) * eff, 2)
+
         await db.execute(
             update(Drive)
             .where(Drive.id == state.current_drive_id)
             .values(
                 end_date=now,
-                end_ideal_range_km=_miles_to_km(charge.get("ideal_battery_range")),
-                end_km=_miles_to_km(drive.get("odometer")),
+                end_ideal_range_km=end_ideal,
+                end_km=end_km,
+                distance=distance,
+                duration_min=duration_min,
+                consumption_kWh=consumption,
             )
         )
         await db.commit()
+
+    async def _car_efficiency(self, db, car_id: int) -> float | None:
+        """kWh per km for the car (cars.efficiency), if known."""
+        car = (await db.execute(select(Car).where(Car.id == car_id))).scalar_one_or_none()
+        return car.efficiency if car and car.efficiency else None
 
     # ── Charge session start/end ───────────────────────────────────────────────
 
@@ -373,6 +451,12 @@ class Poller:
         if not state.current_charge_id:
             return
         now = datetime.now(timezone.utc)
+        cp = (await db.execute(
+            select(ChargingProcess).where(ChargingProcess.id == state.current_charge_id)
+        )).scalar_one_or_none()
+        duration_min = None
+        if cp is not None and cp.start_date is not None:
+            duration_min = max(0, int((now - cp.start_date).total_seconds() // 60))
         await db.execute(
             update(ChargingProcess)
             .where(ChargingProcess.id == state.current_charge_id)
@@ -381,7 +465,7 @@ class Poller:
                 end_battery_level=charge.get("battery_level"),
                 end_ideal_range_km=_miles_to_km(charge.get("ideal_battery_range")),
                 charge_energy_added=charge.get("charge_energy_added"),
-                duration_min=None,
+                duration_min=duration_min,
                 charging_status="done",
             )
         )

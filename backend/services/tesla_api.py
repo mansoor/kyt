@@ -7,9 +7,12 @@ from typing import Any
 
 import httpx
 
+from config import settings
+
 logger = logging.getLogger("teslamate.tesla_api")
 
-FLEET_BASE = "https://fleet-api.prd.na.vn.cloud.tesla.com/api/1"
+# Region-aware base (na/eu/cn) — driven by TESLA_FLEET_BASE.
+FLEET_BASE = settings.TESLA_FLEET_BASE.rstrip("/") + "/api/1"
 
 
 class TeslaAPIError(Exception):
@@ -48,7 +51,7 @@ class TeslaAPIClient:
         return data.get("response", {})
 
     async def vehicle_data(self, vehicle_id: int) -> dict:
-        endpoints = "charge_state;climate_state;drive_state;vehicle_state;vehicle_config"
+        endpoints = "charge_state;climate_state;drive_state;location_data;vehicle_state;vehicle_config"
         data = await self._get(f"/vehicles/{vehicle_id}/vehicle_data?endpoints={endpoints}")
         return data.get("response", {})
 

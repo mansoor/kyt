@@ -19,7 +19,7 @@ export default function VampireTab({ carId, days }: Props) {
     queryFn: () => getVampireDrain(carId, days),
   })
 
-  if (isLoading) return <div className="text-white/40 text-sm py-12 text-center">Loading…</div>
+  if (isLoading) return <div className="text-ink/40 text-sm py-12 text-center">Loading…</div>
   if (!data) return null
 
   const { kpis, by_day } = data
@@ -28,7 +28,7 @@ export default function VampireTab({ carId, days }: Props) {
     <div className="space-y-6">
       <div className="glass rounded-2xl p-4 flex items-start gap-3">
         <div className="text-purple-400 text-lg shrink-0 mt-0.5">🧛</div>
-        <p className="text-white/50 text-sm">
+        <p className="text-ink/50 text-sm">
           Vampire drain is battery % lost while the car is parked (sleeping or idle). Lower is better.
           Sentry mode, pre-conditioning, and poor cell temperatures all increase drain.
         </p>
@@ -45,7 +45,7 @@ export default function VampireTab({ carId, days }: Props) {
       {/* Daily drain bar chart */}
       {by_day.length > 0 && (
         <div className="glass rounded-2xl p-5">
-          <h3 className="text-white/60 text-sm font-medium mb-4">Daily Vampire Drain (%)</h3>
+          <h3 className="text-ink/60 text-sm font-medium mb-4">Daily Vampire Drain (%)</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={by_day} margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
               <CartesianGrid stroke="#ffffff08" vertical={false} />
@@ -66,7 +66,7 @@ export default function VampireTab({ carId, days }: Props) {
       {/* Drain rate line */}
       {by_day.filter(d => d.avg_drain_pct_hr != null).length > 0 && (
         <div className="glass rounded-2xl p-5">
-          <h3 className="text-white/60 text-sm font-medium mb-4">Drain Rate (%/hour)</h3>
+          <h3 className="text-ink/60 text-sm font-medium mb-4">Drain Rate (%/hour)</h3>
           <ResponsiveContainer width="100%" height={160}>
             <BarChart data={by_day} margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
               <CartesianGrid stroke="#ffffff08" vertical={false} />
@@ -82,7 +82,7 @@ export default function VampireTab({ carId, days }: Props) {
       )}
 
       {by_day.length === 0 && (
-        <div className="text-white/30 text-sm text-center py-8">No parking data in the selected period.</div>
+        <div className="text-ink/30 text-sm text-center py-8">No parking data in the selected period.</div>
       )}
     </div>
   )

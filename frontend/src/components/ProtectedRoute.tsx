@@ -23,7 +23,7 @@ export default function ProtectedRoute({ children }: Props) {
 
   if (checking) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-brand-dark">
+      <div className="min-h-screen flex items-center justify-center bg-paper">
         <div className="w-8 h-8 border-2 border-brand-blue border-t-transparent rounded-full animate-spin" />
       </div>
     )

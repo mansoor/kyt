@@ -1,8 +1,13 @@
+export type ThemePref = 'system' | 'light' | 'dark'
+
 export interface UserOut {
   id: string
   email: string
   is_active: boolean
   is_superuser: boolean
+  display_name: string | null
+  theme: ThemePref
+  must_change_password: boolean
   created_at: string
   last_login: string | null
 }

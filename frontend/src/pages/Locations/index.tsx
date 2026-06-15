@@ -32,7 +32,7 @@ export default function LocationsPage() {
     <AppShell>
       <div className="max-w-6xl mx-auto px-6 py-6 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <h1 className="text-white text-xl font-bold flex items-center gap-2">
+          <h1 className="text-ink text-xl font-bold flex items-center gap-2">
             <MapPin className="w-5 h-5 text-brand-blue" /> Locations
           </h1>
           <div className="flex items-center gap-3 flex-wrap">
@@ -40,7 +40,7 @@ export default function LocationsPage() {
               <select
                 value={activeCar ?? ''}
                 onChange={e => setActiveCar(e.target.value ? Number(e.target.value) : undefined)}
-                className="bg-white/5 border border-white/10 text-white text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-blue"
+                className="bg-ink/5 border border-ink/10 text-ink text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-blue"
               >
                 <option value="">All vehicles</option>
                 {vehicles.map(v => (
@@ -48,12 +48,12 @@ export default function LocationsPage() {
                 ))}
               </select>
             )}
-            <label className="flex items-center gap-1.5 text-white/60 text-sm cursor-pointer select-none">
+            <label className="flex items-center gap-1.5 text-ink/60 text-sm cursor-pointer select-none">
               <input type="checkbox" checked={showDrives} onChange={e => setShowDrives(e.target.checked)}
                 className="accent-brand-blue" />
               Drives
             </label>
-            <label className="flex items-center gap-1.5 text-white/60 text-sm cursor-pointer select-none">
+            <label className="flex items-center gap-1.5 text-ink/60 text-sm cursor-pointer select-none">
               <input type="checkbox" checked={showCharges} onChange={e => setShowCharges(e.target.checked)}
                 className="accent-yellow-400" />
               Charges
@@ -64,15 +64,15 @@ export default function LocationsPage() {
         {/* Stats row */}
         {data && (
           <div className="flex gap-4 text-sm">
-            <span className="text-white/40">{data.drives.length} drives shown</span>
-            <span className="text-white/20">·</span>
-            <span className="text-white/40">{data.charges.length} charge locations</span>
+            <span className="text-ink/40">{data.drives.length} drives shown</span>
+            <span className="text-ink/20">·</span>
+            <span className="text-ink/40">{data.charges.length} charge locations</span>
           </div>
         )}
 
-        <div className="rounded-2xl overflow-hidden border border-white/10" style={{ height: 520 }}>
+        <div className="rounded-2xl overflow-hidden border border-ink/10" style={{ height: 520 }}>
           {isLoading ? (
-            <div className="h-full bg-white/5 flex items-center justify-center text-white/30 text-sm">
+            <div className="h-full bg-ink/5 flex items-center justify-center text-ink/30 text-sm">
               Loading map…
             </div>
           ) : (
@@ -145,7 +145,7 @@ export default function LocationsPage() {
         </div>
 
         {/* Legend */}
-        <div className="flex gap-5 text-xs text-white/40">
+        <div className="flex gap-5 text-xs text-ink/40">
           <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" />Drive start</span>
           <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" />Drive end</span>
           <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-yellow-500 inline-block" />Charge location</span>

@@ -42,14 +42,14 @@ export default function AnalyticsPage() {
 
         {/* Header + controls */}
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <h1 className="text-white text-xl font-bold">Analytics</h1>
+          <h1 className="text-ink text-xl font-bold">Analytics</h1>
           <div className="flex items-center gap-3">
             {/* Vehicle filter */}
             {vehicles.length > 1 && (
               <select
                 value={activeCar ?? ''}
                 onChange={e => setActiveCar(e.target.value ? Number(e.target.value) : undefined)}
-                className="bg-white/5 border border-white/10 text-white text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-blue"
+                className="bg-ink/5 border border-ink/10 text-ink text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-blue"
               >
                 <option value="">All vehicles</option>
                 {vehicles.map(v => (
@@ -62,7 +62,7 @@ export default function AnalyticsPage() {
               <select
                 value={days}
                 onChange={e => setDays(Number(e.target.value))}
-                className="bg-white/5 border border-white/10 text-white text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-blue"
+                className="bg-ink/5 border border-ink/10 text-ink text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-blue"
               >
                 {DAYS_OPTIONS.map(o => (
                   <option key={o.value} value={o.value}>{o.label}</option>
@@ -73,7 +73,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Tab bar */}
-        <div className="flex gap-1 bg-white/5 rounded-xl p-1 w-fit">
+        <div className="flex gap-1 bg-ink/5 rounded-xl p-1 w-fit">
           {TABS.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -81,7 +81,7 @@ export default function AnalyticsPage() {
               className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors
                 ${activeTab === id
                   ? 'bg-brand-blue text-white shadow'
-                  : 'text-white/50 hover:text-white hover:bg-white/5'}`}
+                  : 'text-ink/50 hover:text-ink hover:bg-ink/5'}`}
             >
               <Icon className="w-4 h-4" />
               <span className="hidden sm:inline">{label}</span>

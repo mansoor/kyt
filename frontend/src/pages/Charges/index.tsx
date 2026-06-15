@@ -45,10 +45,10 @@ export default function ChargesPage() {
     <AppShell>
       <div className="max-w-7xl mx-auto px-6 py-6 space-y-5">
         <div className="flex items-center justify-between">
-          <h1 className="text-white text-xl font-bold">Charges</h1>
+          <h1 className="text-ink text-xl font-bold">Charges</h1>
           <a
             href={exportChargesUrl({ from, to })}
-            className="flex items-center gap-1.5 text-white/50 hover:text-white text-sm transition-colors"
+            className="flex items-center gap-1.5 text-ink/50 hover:text-ink text-sm transition-colors"
           >
             <Download className="w-4 h-4" /> Export CSV
           </a>
@@ -68,14 +68,14 @@ export default function ChargesPage() {
         {/* Table */}
         <div className="glass rounded-2xl overflow-hidden">
           {isLoading ? (
-            <div className="p-10 text-center text-white/40">Loading charges…</div>
+            <div className="p-10 text-center text-ink/40">Loading charges…</div>
           ) : charges.length === 0 ? (
-            <div className="p-10 text-center text-white/40">No charges in the selected period.</div>
+            <div className="p-10 text-center text-ink/40">No charges in the selected period.</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/10">
+                  <tr className="border-b border-ink/10">
                     {[
                       { key: 'start_date', label: 'Date' },
                       { key: null, label: 'Location' },
@@ -89,7 +89,7 @@ export default function ChargesPage() {
                       <th
                         key={label}
                         onClick={() => key && toggleSort(key)}
-                        className={`px-4 py-3 text-left text-white/50 font-medium ${key ? 'cursor-pointer hover:text-white' : ''}`}
+                        className={`px-4 py-3 text-left text-ink/50 font-medium ${key ? 'cursor-pointer hover:text-ink' : ''}`}
                       >
                         <span className="flex items-center gap-1">
                           {label}
@@ -104,20 +104,20 @@ export default function ChargesPage() {
                     <tr
                       key={c.id}
                       onClick={() => navigate(`/charges/${c.id}`)}
-                      className="border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors"
+                      className="border-b border-ink/5 hover:bg-ink/5 cursor-pointer transition-colors"
                     >
-                      <td className="px-4 py-3 text-white/70 whitespace-nowrap">
+                      <td className="px-4 py-3 text-ink/70 whitespace-nowrap">
                         {format(parseISO(c.start_date), 'MMM d, HH:mm')}
                       </td>
-                      <td className="px-4 py-3 text-white/70 max-w-xs truncate">{c.location}</td>
-                      <td className="px-4 py-3 text-white/70 whitespace-nowrap">
+                      <td className="px-4 py-3 text-ink/70 max-w-xs truncate">{c.location}</td>
+                      <td className="px-4 py-3 text-ink/70 whitespace-nowrap">
                         {c.start_battery ?? '—'}% → {c.end_battery ?? '—'}%
                       </td>
-                      <td className="px-4 py-3 text-white font-medium">{fmt(c.energy_added_kwh)} kWh</td>
-                      <td className="px-4 py-3 text-white/70">{fmtDuration(c.duration_min)}</td>
-                      <td className="px-4 py-3 text-white/70">{c.range_gained_km != null ? `+${fmt(c.range_gained_km, 0)} km` : '—'}</td>
-                      <td className="px-4 py-3 text-white/70">{c.efficiency_pct != null ? `${fmt(c.efficiency_pct)}%` : '—'}</td>
-                      <td className="px-4 py-3 text-white/70">{c.cost != null ? `$${fmt(c.cost, 2)}` : '—'}</td>
+                      <td className="px-4 py-3 text-ink font-medium">{fmt(c.energy_added_kwh)} kWh</td>
+                      <td className="px-4 py-3 text-ink/70">{fmtDuration(c.duration_min)}</td>
+                      <td className="px-4 py-3 text-ink/70">{c.range_gained_km != null ? `+${fmt(c.range_gained_km, 0)} km` : '—'}</td>
+                      <td className="px-4 py-3 text-ink/70">{c.efficiency_pct != null ? `${fmt(c.efficiency_pct)}%` : '—'}</td>
+                      <td className="px-4 py-3 text-ink/70">{c.cost != null ? `$${fmt(c.cost, 2)}` : '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -126,21 +126,21 @@ export default function ChargesPage() {
           )}
 
           {data && data.pages > 1 && (
-            <div className="flex items-center justify-between px-4 py-3 border-t border-white/10">
-              <span className="text-white/40 text-sm">{data.total} total</span>
+            <div className="flex items-center justify-between px-4 py-3 border-t border-ink/10">
+              <span className="text-ink/40 text-sm">{data.total} total</span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="p-1.5 rounded-lg disabled:opacity-30 text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+                  className="p-1.5 rounded-lg disabled:opacity-30 text-ink/60 hover:text-ink hover:bg-ink/10 transition-colors"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                <span className="text-white/50 text-sm">{page} / {data.pages}</span>
+                <span className="text-ink/50 text-sm">{page} / {data.pages}</span>
                 <button
                   onClick={() => setPage(p => Math.min(data.pages, p + 1))}
                   disabled={page === data.pages}
-                  className="p-1.5 rounded-lg disabled:opacity-30 text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+                  className="p-1.5 rounded-lg disabled:opacity-30 text-ink/60 hover:text-ink hover:bg-ink/10 transition-colors"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>

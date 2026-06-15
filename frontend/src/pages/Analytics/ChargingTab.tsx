@@ -28,7 +28,7 @@ export default function ChargingTab({ carId, days }: Props) {
     queryFn: () => getChargingStats(carId, days),
   })
 
-  if (isLoading) return <div className="text-white/40 text-sm py-12 text-center">Loading…</div>
+  if (isLoading) return <div className="text-ink/40 text-sm py-12 text-center">Loading…</div>
   if (!data) return null
 
   const { kpis, by_month, by_hour, soc_distribution } = data
@@ -52,7 +52,7 @@ export default function ChargingTab({ carId, days }: Props) {
       {/* Monthly bar chart */}
       {by_month.length > 0 && (
         <div className="glass rounded-2xl p-5">
-          <h3 className="text-white/60 text-sm font-medium mb-4">Monthly Energy Added (kWh)</h3>
+          <h3 className="text-ink/60 text-sm font-medium mb-4">Monthly Energy Added (kWh)</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={by_month} margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
               <CartesianGrid stroke="#ffffff08" vertical={false} />
@@ -72,7 +72,7 @@ export default function ChargingTab({ carId, days }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* By hour of day */}
         <div className="glass rounded-2xl p-5">
-          <h3 className="text-white/60 text-sm font-medium mb-4">Sessions by Hour of Day</h3>
+          <h3 className="text-ink/60 text-sm font-medium mb-4">Sessions by Hour of Day</h3>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={by_hour} margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
               <CartesianGrid stroke="#ffffff08" vertical={false} />
@@ -92,7 +92,7 @@ export default function ChargingTab({ carId, days }: Props) {
 
         {/* SoC start distribution */}
         <div className="glass rounded-2xl p-5">
-          <h3 className="text-white/60 text-sm font-medium mb-4">Start SoC Distribution</h3>
+          <h3 className="text-ink/60 text-sm font-medium mb-4">Start SoC Distribution</h3>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={soc_distribution} margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
               <CartesianGrid stroke="#ffffff08" vertical={false} />
@@ -106,7 +106,7 @@ export default function ChargingTab({ carId, days }: Props) {
       </div>
 
       {by_month.length === 0 && (
-        <div className="text-white/30 text-sm text-center py-8">No charging data in the selected period.</div>
+        <div className="text-ink/30 text-sm text-center py-8">No charging data in the selected period.</div>
       )}
     </div>
   )

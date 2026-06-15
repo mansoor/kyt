@@ -14,7 +14,7 @@ export default function EfficiencyTab({ carId, days }: Props) {
     queryFn: () => getEfficiency(carId, days),
   })
 
-  if (isLoading) return <div className="text-white/40 text-sm py-12 text-center">Loading…</div>
+  if (isLoading) return <div className="text-ink/40 text-sm py-12 text-center">Loading…</div>
   if (!data) return null
 
   const { kpis, by_day, by_temp, by_speed } = data
@@ -38,7 +38,7 @@ export default function EfficiencyTab({ carId, days }: Props) {
       {/* Daily efficiency line chart */}
       {by_day.length > 0 && (
         <div className="glass rounded-2xl p-5">
-          <h3 className="text-white/60 text-sm font-medium mb-4">Daily Average Efficiency (Wh/km)</h3>
+          <h3 className="text-ink/60 text-sm font-medium mb-4">Daily Average Efficiency (Wh/km)</h3>
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={by_day} margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
               <CartesianGrid stroke="#ffffff08" vertical={false} />
@@ -56,7 +56,7 @@ export default function EfficiencyTab({ carId, days }: Props) {
         {/* Temp scatter */}
         {by_temp.length > 0 && (
           <div className="glass rounded-2xl p-5">
-            <h3 className="text-white/60 text-sm font-medium mb-4">Efficiency vs Outside Temp</h3>
+            <h3 className="text-ink/60 text-sm font-medium mb-4">Efficiency vs Outside Temp</h3>
             <ResponsiveContainer width="100%" height={200}>
               <ScatterChart margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
                 <CartesianGrid stroke="#ffffff08" />
@@ -77,7 +77,7 @@ export default function EfficiencyTab({ carId, days }: Props) {
         {/* Speed scatter */}
         {by_speed.length > 0 && (
           <div className="glass rounded-2xl p-5">
-            <h3 className="text-white/60 text-sm font-medium mb-4">Efficiency vs Max Speed</h3>
+            <h3 className="text-ink/60 text-sm font-medium mb-4">Efficiency vs Max Speed</h3>
             <ResponsiveContainer width="100%" height={200}>
               <ScatterChart margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
                 <CartesianGrid stroke="#ffffff08" />
@@ -96,7 +96,7 @@ export default function EfficiencyTab({ carId, days }: Props) {
       </div>
 
       {by_day.length === 0 && by_temp.length === 0 && (
-        <div className="text-white/30 text-sm text-center py-8">No drive data in the selected period.</div>
+        <div className="text-ink/30 text-sm text-center py-8">No drive data in the selected period.</div>
       )}
     </div>
   )

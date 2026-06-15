@@ -47,14 +47,14 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const moreActive = MORE_NAV.some(n => location.pathname.startsWith(n.to))
 
   return (
-    <div className="min-h-screen bg-brand-dark flex flex-col">
-      <header className="border-b border-white/10 px-4 py-3 flex items-center gap-4 shrink-0">
+    <div className="min-h-screen bg-paper flex flex-col">
+      <header className="border-b border-ink/10 px-4 py-3 flex items-center gap-4 shrink-0">
         {/* Logo */}
         <div className="flex items-center gap-2 shrink-0">
           <div className="w-7 h-7 rounded-md bg-brand-red flex items-center justify-center">
             <Zap className="w-4 h-4 text-white fill-white" />
           </div>
-          <span className="text-white font-bold tracking-tight hidden sm:block">KYT</span>
+          <span className="text-ink font-bold tracking-tight hidden sm:block">KYT</span>
         </div>
 
         {/* Primary nav */}
@@ -66,7 +66,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
                 key={to}
                 to={to}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap
-                  ${active ? 'bg-white/10 text-white' : 'text-white/50 hover:text-white hover:bg-white/5'}`}
+                  ${active ? 'bg-ink/10 text-ink' : 'text-ink/50 hover:text-ink hover:bg-ink/5'}`}
               >
                 <Icon className="w-4 h-4 shrink-0" />
                 <span className="hidden md:inline">{label}</span>
@@ -79,14 +79,14 @@ export default function AppShell({ children }: { children: ReactNode }) {
             <button
               onClick={() => setMoreOpen(o => !o)}
               className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors
-                ${moreActive || moreOpen ? 'bg-white/10 text-white' : 'text-white/50 hover:text-white hover:bg-white/5'}`}
+                ${moreActive || moreOpen ? 'bg-ink/10 text-ink' : 'text-ink/50 hover:text-ink hover:bg-ink/5'}`}
             >
               <span className="hidden md:inline">More</span>
               <ChevronDown className={`w-3.5 h-3.5 transition-transform ${moreOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {moreOpen && (
-              <div className="absolute left-0 top-full mt-1.5 w-52 bg-[#0D1B2A] border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden">
+              <div className="absolute left-0 top-full mt-1.5 w-52 bg-paper border border-ink/10 rounded-xl shadow-2xl z-50 overflow-hidden">
                 {MORE_NAV.map(({ to, label, icon: Icon }) => {
                   const active = location.pathname.startsWith(to)
                   return (
@@ -95,7 +95,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
                       to={to}
                       onClick={() => setMoreOpen(false)}
                       className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-colors
-                        ${active ? 'bg-white/10 text-white' : 'text-white/50 hover:text-white hover:bg-white/5'}`}
+                        ${active ? 'bg-ink/10 text-ink' : 'text-ink/50 hover:text-ink hover:bg-ink/5'}`}
                     >
                       <Icon className="w-4 h-4 shrink-0" />
                       {label}
@@ -112,15 +112,15 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <Link
             to="/settings"
             className={`p-1.5 rounded-lg transition-colors
-              ${location.pathname === '/settings' ? 'text-white bg-white/10' : 'text-white/50 hover:text-white hover:bg-white/5'}`}
+              ${location.pathname === '/settings' ? 'text-ink bg-ink/10' : 'text-ink/50 hover:text-ink hover:bg-ink/5'}`}
           >
             <Settings className="w-4 h-4" />
           </Link>
-          <span className="text-white/20 hidden sm:block">|</span>
-          <span className="text-white/40 text-sm hidden lg:block max-w-32 truncate">{user?.email}</span>
+          <span className="text-ink/20 hidden sm:block">|</span>
+          <span className="text-ink/40 text-sm hidden lg:block max-w-32 truncate">{user?.email}</span>
           <button
             onClick={handleLogout}
-            className="p-1.5 text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+            className="p-1.5 text-ink/50 hover:text-ink hover:bg-ink/5 rounded-lg transition-colors"
           >
             <LogOut className="w-4 h-4" />
           </button>

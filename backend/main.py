@@ -65,6 +65,8 @@ def create_app() -> FastAPI:
     from routers.drives import router as drives_router
     from routers.public import router as public_router
     from routers.tesla import router as tesla_router
+    from routers.users import router as users_router
+    from routers.notifications import router as notifications_router
 
     app = FastAPI(
         title="Know Your Tesla (KYT) API",
@@ -101,6 +103,8 @@ def create_app() -> FastAPI:
         return response
 
     app.include_router(auth_router, prefix="/api")
+    app.include_router(users_router, prefix="/api")
+    app.include_router(notifications_router, prefix="/api")
     app.include_router(public_router, prefix="/api")
     app.include_router(tesla_router, prefix="/api")
     app.include_router(dashboard_router, prefix="/api")

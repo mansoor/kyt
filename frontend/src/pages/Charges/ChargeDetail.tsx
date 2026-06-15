@@ -57,10 +57,10 @@ export default function ChargeDetailPage() {
   const chargeCurve = readingsData?.charge_curve ?? []
 
   if (isLoading) {
-    return <AppShell><div className="flex items-center justify-center h-64 text-white/40">Loading…</div></AppShell>
+    return <AppShell><div className="flex items-center justify-center h-64 text-ink/40">Loading…</div></AppShell>
   }
   if (!charge) {
-    return <AppShell><div className="flex items-center justify-center h-64 text-white/40">Not found</div></AppShell>
+    return <AppShell><div className="flex items-center justify-center h-64 text-ink/40">Not found</div></AppShell>
   }
 
   const hasMap = charge.latitude != null && charge.longitude != null
@@ -72,15 +72,15 @@ export default function ChargeDetailPage() {
         <div>
           <button
             onClick={() => navigate('/charges')}
-            className="flex items-center gap-1.5 text-white/50 hover:text-white text-sm mb-4 transition-colors"
+            className="flex items-center gap-1.5 text-ink/50 hover:text-ink text-sm mb-4 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" /> Back to Charges
           </button>
-          <h1 className="text-white text-xl font-bold flex items-center gap-2">
+          <h1 className="text-ink text-xl font-bold flex items-center gap-2">
             <MapPin className="w-5 h-5 text-yellow-400" />
             {charge.location}
           </h1>
-          <p className="text-white/50 text-sm mt-1">
+          <p className="text-ink/50 text-sm mt-1">
             {charge.start_date ? format(parseISO(charge.start_date), 'EEEE, MMM d yyyy · HH:mm') : ''}
           </p>
         </div>
@@ -88,20 +88,20 @@ export default function ChargeDetailPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="glass rounded-xl p-4">
-            <p className="text-white/50 text-xs uppercase tracking-wider mb-1 flex items-center gap-1"><Zap className="w-3 h-3" /> Added</p>
-            <p className="text-white text-2xl font-bold">{fmt(charge.energy_added_kwh)} kWh</p>
+            <p className="text-ink/50 text-xs uppercase tracking-wider mb-1 flex items-center gap-1"><Zap className="w-3 h-3" /> Added</p>
+            <p className="text-ink text-2xl font-bold">{fmt(charge.energy_added_kwh)} kWh</p>
           </div>
           <div className="glass rounded-xl p-4">
-            <p className="text-white/50 text-xs uppercase tracking-wider mb-1">SoC</p>
-            <p className="text-white text-2xl font-bold">{charge.start_battery ?? '—'}% → {charge.end_battery ?? '—'}%</p>
+            <p className="text-ink/50 text-xs uppercase tracking-wider mb-1">SoC</p>
+            <p className="text-ink text-2xl font-bold">{charge.start_battery ?? '—'}% → {charge.end_battery ?? '—'}%</p>
           </div>
           <div className="glass rounded-xl p-4">
-            <p className="text-white/50 text-xs uppercase tracking-wider mb-1 flex items-center gap-1"><Clock className="w-3 h-3" /> Duration</p>
-            <p className="text-white text-2xl font-bold">{fmtDuration(charge.duration_min)}</p>
+            <p className="text-ink/50 text-xs uppercase tracking-wider mb-1 flex items-center gap-1"><Clock className="w-3 h-3" /> Duration</p>
+            <p className="text-ink text-2xl font-bold">{fmtDuration(charge.duration_min)}</p>
           </div>
           <div className="glass rounded-xl p-4">
-            <p className="text-white/50 text-xs uppercase tracking-wider mb-1">Range gained</p>
-            <p className="text-white text-2xl font-bold">
+            <p className="text-ink/50 text-xs uppercase tracking-wider mb-1">Range gained</p>
+            <p className="text-ink text-2xl font-bold">
               {charge.start_range_km && charge.end_range_km
                 ? `+${fmt(charge.end_range_km - charge.start_range_km, 0)} km`
                 : '—'}
@@ -133,7 +133,7 @@ export default function ChargeDetailPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Battery SoC */}
             <div className="glass rounded-2xl p-4">
-              <p className="text-white/60 text-sm font-medium mb-3">Battery Level (%)</p>
+              <p className="text-ink/60 text-sm font-medium mb-3">Battery Level (%)</p>
               <ResponsiveContainer width="100%" height={120}>
                 <AreaChart data={readings} margin={{ top: 2, right: 4, bottom: 0, left: -20 }}>
                   <defs>
@@ -152,7 +152,7 @@ export default function ChargeDetailPage() {
 
             {/* Power */}
             <div className="glass rounded-2xl p-4">
-              <p className="text-white/60 text-sm font-medium mb-3">Charger Power (kW)</p>
+              <p className="text-ink/60 text-sm font-medium mb-3">Charger Power (kW)</p>
               <ResponsiveContainer width="100%" height={120}>
                 <LineChart data={readings} margin={{ top: 2, right: 4, bottom: 0, left: -20 }}>
                   <XAxis dataKey="t" hide />
@@ -165,7 +165,7 @@ export default function ChargeDetailPage() {
 
             {/* Voltage */}
             <div className="glass rounded-2xl p-4">
-              <p className="text-white/60 text-sm font-medium mb-3">Voltage (V)</p>
+              <p className="text-ink/60 text-sm font-medium mb-3">Voltage (V)</p>
               <ResponsiveContainer width="100%" height={120}>
                 <LineChart data={readings} margin={{ top: 2, right: 4, bottom: 0, left: -20 }}>
                   <XAxis dataKey="t" hide />
@@ -179,7 +179,7 @@ export default function ChargeDetailPage() {
             {/* Charge curve: SoC vs Power */}
             {chargeCurve.length > 1 && (
               <div className="glass rounded-2xl p-4">
-                <p className="text-white/60 text-sm font-medium mb-3">Charge Curve (SoC → Power)</p>
+                <p className="text-ink/60 text-sm font-medium mb-3">Charge Curve (SoC → Power)</p>
                 <ResponsiveContainer width="100%" height={120}>
                   <ScatterChart margin={{ top: 2, right: 4, bottom: 0, left: -20 }}>
                     <XAxis dataKey="soc" name="SoC %" unit="%" tick={{ fill: '#ffffff40', fontSize: 10 }} tickLine={false} axisLine={false} />
@@ -196,7 +196,7 @@ export default function ChargeDetailPage() {
         {/* Energy added cumulative */}
         {readings.length > 0 && (
           <div className="glass rounded-2xl p-4">
-            <p className="text-white/60 text-sm font-medium mb-3">Energy Added (kWh cumulative)</p>
+            <p className="text-ink/60 text-sm font-medium mb-3">Energy Added (kWh cumulative)</p>
             <ResponsiveContainer width="100%" height={120}>
               <AreaChart data={readings} margin={{ top: 2, right: 4, bottom: 0, left: -10 }}>
                 <defs>
