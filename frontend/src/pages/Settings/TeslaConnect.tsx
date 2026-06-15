@@ -43,7 +43,10 @@ export default function TeslaConnect() {
 
   const disconnectMutation = useMutation({
     mutationFn: disconnectTesla,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['vehicles'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['vehicles'] })
+      queryClient.invalidateQueries({ queryKey: ['tesla-setup-status'] })
+    },
   })
 
   const wakeMutation = useMutation({

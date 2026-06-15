@@ -112,10 +112,12 @@ async def setup_status(
 ):
     """Return current state of Fleet API setup."""
     row = (await db.execute(select(Settings).where(Settings.id == 1))).scalar_one_or_none()
+    any_token = (await db.execute(select(TeslaToken.id).limit(1))).scalar_one_or_none()
     return {
         "configured": bool(settings.TESLA_CLIENT_ID and settings.TESLA_CLIENT_SECRET),
         "keys_generated": bool(row and row.tesla_public_key),
         "registered": bool(row and row.tesla_registered),
+        "connected": any_token is not None,
     }
 
 
@@ -210,6 +212,10 @@ async def disconnect(
     if token_row:
         await db.delete(token_row)
         await db.commit()
+    # If no tokens remain anywhere, the instance is fully disconnected — stop polling.
+    remaining = (await db.execute(select(TeslaToken.id).limit(1))).scalar_one_or_none()
+    if remaining is None:
+        poller.stop_all_polling()
 
 
 # ── Vehicles ───────────────────────────────────────────────────────────────────
@@ -231,6 +237,10 @@ async def list_vehicles(
     current_user=Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    # No Tesla token anywhere → account is disconnected; report no vehicles.
+    any_token = (await db.execute(select(TeslaToken.id).limit(1))).scalar_one_or_none()
+    if any_token is None:
+        return []
     result = await db.execute(select(Car))
     cars = result.scalars().all()
     poller_status = {s["car_id"]: s for s in poller.get_status()}

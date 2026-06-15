@@ -36,6 +36,7 @@ export interface SetupStatus {
   configured: boolean
   keys_generated: boolean
   registered: boolean
+  connected: boolean
 }
 
 export async function getSetupStatus(): Promise<SetupStatus> {

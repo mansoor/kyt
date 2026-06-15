@@ -136,6 +136,18 @@ class Poller:
         logger.info("Starting poller for car %s (vid=%s)", car.id, car.vid)
         self._schedule_poll(car.id, delay=0)
 
+    def stop_all_polling(self) -> None:
+        """Remove all scheduled poll jobs and clear in-memory state (on disconnect)."""
+        for car_id in list(self._states.keys()):
+            job_id = f"poll_{car_id}"
+            if self._scheduler.get_job(job_id):
+                try:
+                    self._scheduler.remove_job(job_id)
+                except Exception:
+                    pass
+        self._states.clear()
+        logger.info("Polling stopped for all cars (Tesla disconnected)")
+
     def add_car(self, car_id: int, vehicle_id: int) -> None:
         """Called after a new car is registered via OAuth callback."""
         if car_id not in self._states:
