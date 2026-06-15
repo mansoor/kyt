@@ -105,7 +105,7 @@ export default function GeofencesPage() {
     <AppShell>
       <div className="max-w-6xl mx-auto px-6 py-6 space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-white text-xl font-bold flex items-center gap-2">
+          <h1 className="text-ink text-xl font-bold flex items-center gap-2">
             <MapPin className="w-5 h-5 text-brand-teal" /> Geofences
           </h1>
           <button
@@ -119,9 +119,9 @@ export default function GeofencesPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* List */}
           <div className="space-y-3">
-            {isLoading && <div className="text-white/40 text-sm">Loading…</div>}
+            {isLoading && <div className="text-ink/40 text-sm">Loading…</div>}
             {geofences.length === 0 && !isLoading && (
-              <div className="glass rounded-2xl p-8 text-center text-white/30 text-sm">
+              <div className="glass rounded-2xl p-8 text-center text-ink/30 text-sm">
                 No geofences yet. Add one to tag charging and drive locations.
               </div>
             )}
@@ -129,17 +129,17 @@ export default function GeofencesPage() {
               <div key={f.id} className={`glass rounded-xl p-4 flex items-start gap-3 transition-all
                 ${editing === f.id ? 'ring-2 ring-brand-blue' : ''}`}>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white font-medium text-sm">{f.name}</p>
-                  <p className="text-white/40 text-xs mt-0.5">
+                  <p className="text-ink font-medium text-sm">{f.name}</p>
+                  <p className="text-ink/40 text-xs mt-0.5">
                     {f.latitude.toFixed(4)}, {f.longitude.toFixed(4)} · r={f.radius}m
                   </p>
                   {f.cost_per_unit != null && (
-                    <p className="text-white/30 text-xs">${f.cost_per_unit}/{f.billing_type ?? 'unit'}</p>
+                    <p className="text-ink/30 text-xs">${f.cost_per_unit}/{f.billing_type ?? 'unit'}</p>
                   )}
                 </div>
                 <div className="flex gap-1 shrink-0">
                   <button onClick={() => startEdit(f)}
-                    className="p-1.5 text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
+                    className="p-1.5 text-ink/40 hover:text-ink hover:bg-ink/10 rounded-lg transition-colors">
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
                   <button onClick={() => deleteMut.mutate(f.id)}
@@ -153,7 +153,7 @@ export default function GeofencesPage() {
 
           {/* Map + form */}
           <div className="space-y-4">
-            <div className="rounded-2xl overflow-hidden border border-white/10" style={{ height: 300 }}>
+            <div className="rounded-2xl overflow-hidden border border-ink/10" style={{ height: 300 }}>
               <MapContainer center={mapCenter} zoom={11} style={{ height: '100%', width: '100%' }}>
                 <TileLayer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -187,8 +187,8 @@ export default function GeofencesPage() {
             {editing !== null && (
               <div className="glass rounded-2xl p-5 space-y-3">
                 <div className="flex items-center justify-between mb-1">
-                  <h3 className="text-white font-medium text-sm">{editing === 'new' ? 'New Geofence' : 'Edit Geofence'}</h3>
-                  <button onClick={() => setEditing(null)} className="text-white/40 hover:text-white">
+                  <h3 className="text-ink font-medium text-sm">{editing === 'new' ? 'New Geofence' : 'Edit Geofence'}</h3>
+                  <button onClick={() => setEditing(null)} className="text-ink/40 hover:text-ink">
                     <X className="w-4 h-4" />
                   </button>
                 </div>
@@ -196,14 +196,14 @@ export default function GeofencesPage() {
                 <div className="grid grid-cols-1 gap-2">
                   <input placeholder="Name" value={form.name}
                     onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                    className="bg-white/5 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-blue placeholder-white/30 w-full" />
+                    className="bg-ink/5 border border-ink/10 text-ink text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-blue placeholder-ink/30 w-full" />
                   <div className="grid grid-cols-2 gap-2">
                     <input placeholder="Latitude" value={form.latitude}
                       onChange={e => setForm(f => ({ ...f, latitude: e.target.value }))}
-                      className="bg-white/5 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-blue placeholder-white/30" />
+                      className="bg-ink/5 border border-ink/10 text-ink text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-blue placeholder-ink/30" />
                     <input placeholder="Longitude" value={form.longitude}
                       onChange={e => setForm(f => ({ ...f, longitude: e.target.value }))}
-                      className="bg-white/5 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-blue placeholder-white/30" />
+                      className="bg-ink/5 border border-ink/10 text-ink text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-blue placeholder-ink/30" />
                   </div>
                   <button onClick={() => setPicking(true)}
                     className="text-brand-blue text-xs text-left hover:underline">
@@ -211,14 +211,14 @@ export default function GeofencesPage() {
                   </button>
                   <input placeholder="Radius (meters)" value={form.radius}
                     onChange={e => setForm(f => ({ ...f, radius: e.target.value }))}
-                    className="bg-white/5 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-blue placeholder-white/30" />
+                    className="bg-ink/5 border border-ink/10 text-ink text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-blue placeholder-ink/30" />
                   <div className="grid grid-cols-2 gap-2">
                     <input placeholder="Cost/unit (optional)" value={form.cost_per_unit}
                       onChange={e => setForm(f => ({ ...f, cost_per_unit: e.target.value }))}
-                      className="bg-white/5 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-blue placeholder-white/30" />
+                      className="bg-ink/5 border border-ink/10 text-ink text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-blue placeholder-ink/30" />
                     <select value={form.billing_type}
                       onChange={e => setForm(f => ({ ...f, billing_type: e.target.value }))}
-                      className="bg-white/5 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-blue">
+                      className="bg-ink/5 border border-ink/10 text-ink text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-blue">
                       <option value="">Billing type</option>
                       <option value="per_kwh">Per kWh</option>
                       <option value="per_minute">Per minute</option>
@@ -229,7 +229,7 @@ export default function GeofencesPage() {
 
                 <div className="flex gap-2 justify-end">
                   <button onClick={() => setEditing(null)}
-                    className="px-4 py-2 text-sm text-white/50 hover:text-white transition-colors">
+                    className="px-4 py-2 text-sm text-ink/50 hover:text-ink transition-colors">
                     Cancel
                   </button>
                   <button onClick={handleSubmit}

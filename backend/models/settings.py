@@ -19,5 +19,12 @@ class Settings(Base):
     tesla_public_key: Mapped[str | None] = mapped_column(Text, nullable=True)
     tesla_private_key_enc: Mapped[str | None] = mapped_column(Text, nullable=True)
     tesla_registered: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    # Global SMTP relay (admin-managed) used by Apprise to deliver email notifications
+    smtp_host: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    smtp_port: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    smtp_username: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    smtp_password_enc: Mapped[str | None] = mapped_column(Text, nullable=True)
+    smtp_from: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    smtp_use_tls: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     inserted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)

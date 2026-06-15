@@ -94,10 +94,10 @@ function StateBadge({ state }: { state: string }) {
 function VehicleCard({ v }: { v: VehicleChargeLevel }) {
   return (
     <div className="glass rounded-2xl p-4 min-w-[160px] flex flex-col items-center gap-3">
-      <p className="text-white/70 text-sm font-medium truncate max-w-[140px]">{v.name}</p>
+      <p className="text-ink/70 text-sm font-medium truncate max-w-[140px]">{v.name}</p>
       <BatteryGauge level={v.battery_level} />
       {v.est_battery_range_km != null && (
-        <p className="text-white text-sm font-semibold">{Math.round(v.est_battery_range_km)} km</p>
+        <p className="text-ink text-sm font-semibold">{Math.round(v.est_battery_range_km)} km</p>
       )}
       <StateBadge state={v.charging_state} />
       {v.charge_rate_km != null && v.charging_state === 'Charging' && (
@@ -111,9 +111,9 @@ function VehicleCard({ v }: { v: VehicleChargeLevel }) {
 function PlaceholderCard() {
   return (
     <div className="glass rounded-2xl p-4 min-w-[160px] flex flex-col items-center gap-3 opacity-60">
-      <p className="text-white/50 text-sm">No vehicles</p>
+      <p className="text-ink/50 text-sm">No vehicles</p>
       <BatteryGauge level={null} />
-      <p className="text-white/40 text-xs text-center">Connect a Tesla in Settings</p>
+      <p className="text-ink/40 text-xs text-center">Connect a Tesla in Settings</p>
     </div>
   )
 }
@@ -136,7 +136,7 @@ export default function ChargeWidget() {
       <div className="flex gap-3 overflow-x-auto pb-2 justify-center w-full">
         {isLoading ? (
           <div className="glass rounded-2xl p-4 min-w-[160px] flex items-center justify-center h-[220px]">
-            <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-ink/30 border-t-white rounded-full animate-spin" />
           </div>
         ) : vehicles.length === 0 ? (
           <PlaceholderCard />
@@ -147,7 +147,7 @@ export default function ChargeWidget() {
 
       {/* Last updated */}
       {lastUpdated && (
-        <p className="text-white/30 text-xs">
+        <p className="text-ink/30 text-xs">
           Updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           {' · '}auto-refreshes every 60s
         </p>

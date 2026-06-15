@@ -29,7 +29,7 @@ export default function TimelineTab({ carId }: Props) {
     queryFn: () => getTimeline(carId),
   })
 
-  if (isLoading) return <div className="text-white/40 text-sm py-12 text-center">Loading…</div>
+  if (isLoading) return <div className="text-ink/40 text-sm py-12 text-center">Loading…</div>
   if (!data) return null
 
   const { days } = data
@@ -82,15 +82,15 @@ export default function TimelineTab({ carId }: Props) {
           { label: 'Energy Added', value: `${totalChargeKwh.toFixed(0)} kWh` },
         ].map(({ label, value }) => (
           <div key={label} className="glass rounded-xl p-4">
-            <p className="text-white/40 text-xs mb-1">{label}</p>
-            <p className="text-white font-bold text-lg">{value}</p>
+            <p className="text-ink/40 text-xs mb-1">{label}</p>
+            <p className="text-ink font-bold text-lg">{value}</p>
           </div>
         ))}
       </div>
 
       {/* Heatmap */}
       <div className="glass rounded-2xl p-5 overflow-x-auto">
-        <h3 className="text-white/60 text-sm font-medium mb-4">Activity — Last 12 Months</h3>
+        <h3 className="text-ink/60 text-sm font-medium mb-4">Activity — Last 12 Months</h3>
         <div className="min-w-max">
           {/* Month labels */}
           <div className="flex mb-1" style={{ marginLeft: 28 }}>
@@ -98,7 +98,7 @@ export default function TimelineTab({ carId }: Props) {
               const ml = monthLabels.find(m => m.weekIdx === wi)
               return (
                 <div key={wi} style={{ width: CELL + GAP, flexShrink: 0 }}>
-                  {ml && <span className="text-white/40 text-[10px]">{ml.label}</span>}
+                  {ml && <span className="text-ink/40 text-[10px]">{ml.label}</span>}
                 </div>
               )
             })}
@@ -139,7 +139,7 @@ export default function TimelineTab({ carId }: Props) {
         </div>
 
         {/* Legend */}
-        <div className="flex items-center gap-2 mt-4 text-white/40 text-xs">
+        <div className="flex items-center gap-2 mt-4 text-ink/40 text-xs">
           <span>Less</span>
           {['#ffffff08', '#1A73E830', '#1A73E870', '#1A73E8B0', '#1A73E8'].map(c => (
             <div key={c} style={{ width: 12, height: 12, borderRadius: 2, background: c }} />
@@ -151,7 +151,7 @@ export default function TimelineTab({ carId }: Props) {
       </div>
 
       {days.length === 0 && (
-        <div className="text-white/30 text-sm text-center py-8">No activity in the last year.</div>
+        <div className="text-ink/30 text-sm text-center py-8">No activity in the last year.</div>
       )}
     </div>
   )

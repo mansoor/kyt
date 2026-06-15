@@ -64,7 +64,7 @@ export default function DriveDetailPage() {
   if (isLoading) {
     return (
       <AppShell>
-        <div className="flex items-center justify-center h-64 text-white/40">Loading drive…</div>
+        <div className="flex items-center justify-center h-64 text-ink/40">Loading drive…</div>
       </AppShell>
     )
   }
@@ -72,7 +72,7 @@ export default function DriveDetailPage() {
   if (!drive) {
     return (
       <AppShell>
-        <div className="flex items-center justify-center h-64 text-white/40">Drive not found</div>
+        <div className="flex items-center justify-center h-64 text-ink/40">Drive not found</div>
       </AppShell>
     )
   }
@@ -84,14 +84,14 @@ export default function DriveDetailPage() {
         <div>
           <button
             onClick={() => navigate('/drives')}
-            className="flex items-center gap-1.5 text-white/50 hover:text-white text-sm mb-4 transition-colors"
+            className="flex items-center gap-1.5 text-ink/50 hover:text-ink text-sm mb-4 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" /> Back to Drives
           </button>
-          <h1 className="text-white text-xl font-bold">
+          <h1 className="text-ink text-xl font-bold">
             {drive.start_address ?? 'Unknown'} → {drive.end_address ?? 'Unknown'}
           </h1>
-          <p className="text-white/50 text-sm mt-1">
+          <p className="text-ink/50 text-sm mt-1">
             {drive.start_date ? format(parseISO(drive.start_date), 'EEEE, MMM d yyyy · HH:mm') : ''}
           </p>
         </div>
@@ -99,20 +99,20 @@ export default function DriveDetailPage() {
         {/* Stats row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="glass rounded-xl p-4">
-            <p className="text-white/50 text-xs uppercase tracking-wider mb-1 flex items-center gap-1"><Route className="w-3 h-3" /> Distance</p>
-            <p className="text-white text-2xl font-bold">{fmt(drive.distance_km)} km</p>
+            <p className="text-ink/50 text-xs uppercase tracking-wider mb-1 flex items-center gap-1"><Route className="w-3 h-3" /> Distance</p>
+            <p className="text-ink text-2xl font-bold">{fmt(drive.distance_km)} km</p>
           </div>
           <div className="glass rounded-xl p-4">
-            <p className="text-white/50 text-xs uppercase tracking-wider mb-1 flex items-center gap-1"><Clock className="w-3 h-3" /> Duration</p>
-            <p className="text-white text-2xl font-bold">{fmtDuration(drive.duration_min)}</p>
+            <p className="text-ink/50 text-xs uppercase tracking-wider mb-1 flex items-center gap-1"><Clock className="w-3 h-3" /> Duration</p>
+            <p className="text-ink text-2xl font-bold">{fmtDuration(drive.duration_min)}</p>
           </div>
           <div className="glass rounded-xl p-4">
-            <p className="text-white/50 text-xs uppercase tracking-wider mb-1">Max Speed</p>
-            <p className="text-white text-2xl font-bold">{drive.speed_max_kmh ?? '—'} km/h</p>
+            <p className="text-ink/50 text-xs uppercase tracking-wider mb-1">Max Speed</p>
+            <p className="text-ink text-2xl font-bold">{drive.speed_max_kmh ?? '—'} km/h</p>
           </div>
           <div className="glass rounded-xl p-4">
-            <p className="text-white/50 text-xs uppercase tracking-wider mb-1 flex items-center gap-1"><Zap className="w-3 h-3" /> Energy</p>
-            <p className="text-white text-2xl font-bold">{fmt(drive.consumption_kwh, 2)} kWh</p>
+            <p className="text-ink/50 text-xs uppercase tracking-wider mb-1 flex items-center gap-1"><Zap className="w-3 h-3" /> Energy</p>
+            <p className="text-ink text-2xl font-bold">{fmt(drive.consumption_kwh, 2)} kWh</p>
           </div>
         </div>
 
@@ -149,7 +149,7 @@ export default function DriveDetailPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Speed */}
             <div className="glass rounded-2xl p-4">
-              <p className="text-white/60 text-sm font-medium mb-3">Speed (km/h)</p>
+              <p className="text-ink/60 text-sm font-medium mb-3">Speed (km/h)</p>
               <ResponsiveContainer width="100%" height={120}>
                 <LineChart data={positions} margin={{ top: 2, right: 4, bottom: 0, left: -20 }}>
                   <XAxis dataKey="t" hide />
@@ -162,7 +162,7 @@ export default function DriveDetailPage() {
 
             {/* Power */}
             <div className="glass rounded-2xl p-4">
-              <p className="text-white/60 text-sm font-medium mb-3">Power (kW)</p>
+              <p className="text-ink/60 text-sm font-medium mb-3">Power (kW)</p>
               <ResponsiveContainer width="100%" height={120}>
                 <LineChart data={positions} margin={{ top: 2, right: 4, bottom: 0, left: -20 }}>
                   <XAxis dataKey="t" hide />
@@ -176,7 +176,7 @@ export default function DriveDetailPage() {
 
             {/* Battery */}
             <div className="glass rounded-2xl p-4">
-              <p className="text-white/60 text-sm font-medium mb-3">Battery (%)</p>
+              <p className="text-ink/60 text-sm font-medium mb-3">Battery (%)</p>
               <ResponsiveContainer width="100%" height={120}>
                 <AreaChart data={positions} margin={{ top: 2, right: 4, bottom: 0, left: -20 }}>
                   <defs>
@@ -195,7 +195,7 @@ export default function DriveDetailPage() {
 
             {/* Temperature */}
             <div className="glass rounded-2xl p-4">
-              <p className="text-white/60 text-sm font-medium mb-3">Temperature (°C)</p>
+              <p className="text-ink/60 text-sm font-medium mb-3">Temperature (°C)</p>
               <ResponsiveContainer width="100%" height={120}>
                 <LineChart data={positions} margin={{ top: 2, right: 4, bottom: 0, left: -20 }}>
                   <XAxis dataKey="t" hide />

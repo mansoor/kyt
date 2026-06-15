@@ -31,14 +31,14 @@ export default function BatteryPage() {
     <AppShell>
       <div className="max-w-5xl mx-auto px-6 py-6 space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <h1 className="text-white text-xl font-bold flex items-center gap-2">
+          <h1 className="text-ink text-xl font-bold flex items-center gap-2">
             <Battery className="w-5 h-5 text-green-400" /> Battery Health
           </h1>
           {vehicles.length > 1 && (
             <select
               value={activeCar ?? ''}
               onChange={e => setActiveCar(e.target.value ? Number(e.target.value) : undefined)}
-              className="bg-white/5 border border-white/10 text-white text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-blue"
+              className="bg-ink/5 border border-ink/10 text-ink text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-blue"
             >
               <option value="">All vehicles</option>
               {vehicles.map(v => (
@@ -48,7 +48,7 @@ export default function BatteryPage() {
           )}
         </div>
 
-        {isLoading && <div className="text-white/40 text-sm py-12 text-center">Loading…</div>}
+        {isLoading && <div className="text-ink/40 text-sm py-12 text-center">Loading…</div>}
 
         {data && (
           <>
@@ -64,14 +64,14 @@ export default function BatteryPage() {
                   <div key={label} className="glass rounded-2xl p-4">
                     <div className="flex items-center gap-1.5 mb-2">
                       <Icon className={`w-3.5 h-3.5 ${color}`} />
-                      <p className="text-white/40 text-xs">{label}</p>
+                      <p className="text-ink/40 text-xs">{label}</p>
                     </div>
-                    <p className="text-white font-bold text-xl">{value}</p>
+                    <p className="text-ink font-bold text-xl">{value}</p>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="glass rounded-2xl p-5 text-white/40 text-sm text-center">
+              <div className="glass rounded-2xl p-5 text-ink/40 text-sm text-center">
                 Not enough data yet. Battery health tracking requires positions with high SoC (≥90%).
               </div>
             )}
@@ -82,10 +82,10 @@ export default function BatteryPage() {
                 <Zap className="w-5 h-5 text-yellow-400" />
               </div>
               <div>
-                <p className="text-white/40 text-xs mb-0.5">Estimated Charge Cycles</p>
-                <p className="text-white font-bold text-lg">{data.estimated_charge_cycles.toLocaleString()}</p>
+                <p className="text-ink/40 text-xs mb-0.5">Estimated Charge Cycles</p>
+                <p className="text-ink font-bold text-lg">{data.estimated_charge_cycles.toLocaleString()}</p>
               </div>
-              <p className="text-white/30 text-xs ml-auto text-right max-w-48">
+              <p className="text-ink/30 text-xs ml-auto text-right max-w-48">
                 Counted as charging sessions with &gt;10 kWh added.
               </p>
             </div>
@@ -93,7 +93,7 @@ export default function BatteryPage() {
             {/* Range over time */}
             {data.weekly.length > 0 && (
               <div className="glass rounded-2xl p-5">
-                <h2 className="text-white/60 text-sm font-medium mb-4">Max Observed Range at ≥90% SoC (weekly)</h2>
+                <h2 className="text-ink/60 text-sm font-medium mb-4">Max Observed Range at ≥90% SoC (weekly)</h2>
                 <ResponsiveContainer width="100%" height={220}>
                   <AreaChart data={data.weekly} margin={{ top: 4, right: 8, bottom: 0, left: -10 }}>
                     <defs>
@@ -123,22 +123,22 @@ export default function BatteryPage() {
             {/* Weekly data table */}
             {data.weekly.length > 0 && (
               <div className="glass rounded-2xl p-5">
-                <h2 className="text-white/60 text-sm font-medium mb-4">Weekly Range History</h2>
+                <h2 className="text-ink/60 text-sm font-medium mb-4">Weekly Range History</h2>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-white/10">
+                      <tr className="border-b border-ink/10">
                         {['Week', 'Max Rated Range', 'Samples'].map(h => (
-                          <th key={h} className="text-left text-white/40 font-medium pb-2 pr-6">{h}</th>
+                          <th key={h} className="text-left text-ink/40 font-medium pb-2 pr-6">{h}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
                       {[...data.weekly].reverse().map(w => (
-                        <tr key={w.week} className="border-b border-white/5 hover:bg-white/5">
-                          <td className="py-2 pr-6 text-white/60">{w.week}</td>
-                          <td className="py-2 pr-6 text-white font-medium">{w.max_rated_km} km</td>
-                          <td className="py-2 pr-6 text-white/40">{w.samples}</td>
+                        <tr key={w.week} className="border-b border-ink/5 hover:bg-ink/5">
+                          <td className="py-2 pr-6 text-ink/60">{w.week}</td>
+                          <td className="py-2 pr-6 text-ink font-medium">{w.max_rated_km} km</td>
+                          <td className="py-2 pr-6 text-ink/40">{w.samples}</td>
                         </tr>
                       ))}
                     </tbody>

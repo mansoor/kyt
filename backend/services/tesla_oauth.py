@@ -11,7 +11,9 @@ import httpx
 from config import settings
 
 TESLA_AUTH_BASE = "https://auth.tesla.com/oauth2/v3"
-TESLA_SCOPES = "openid email offline_access vehicle_device_data vehicle_cmds vehicle_charging_cmds"
+# NOTE: vehicle_location is required for GPS (drive_state lat/lon). Without it the
+# Fleet API omits location and no position rows can be written.
+TESLA_SCOPES = "openid email offline_access vehicle_device_data vehicle_location vehicle_cmds vehicle_charging_cmds"
 
 
 def _fleet_audience() -> str:

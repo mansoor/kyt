@@ -1,16 +1,22 @@
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+import { QueryClientProvider, QueryClient, useQuery } from '@tanstack/react-query'
 import ChargeWidget from './ChargeWidget'
 import LoginForm from './LoginForm'
+import { getBootstrapStatus } from '@/api/auth'
 
 // Standalone QueryClient for the public login page (no auth needed)
 const publicQueryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 55_000 } },
 })
 
+function LoginInner() {
+  const { data } = useQuery({ queryKey: ['bootstrap-status'], queryFn: getBootstrapStatus })
+  return <LoginForm mode={data?.needs_setup ? 'signup' : 'login'} />
+}
+
 export default function LoginPage() {
   return (
     <QueryClientProvider client={publicQueryClient}>
-      <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center px-4 py-12 gap-8">
+      <div className="min-h-screen bg-paper flex flex-col items-center justify-center px-4 py-12 gap-8">
         {/* Subtle radial glow */}
         <div
           aria-hidden="true"
@@ -24,8 +30,8 @@ export default function LoginPage() {
           {/* Battery gauge widget */}
           <ChargeWidget />
 
-          {/* Login form */}
-          <LoginForm />
+          {/* Login or first-run signup form */}
+          <LoginInner />
         </div>
       </div>
     </QueryClientProvider>

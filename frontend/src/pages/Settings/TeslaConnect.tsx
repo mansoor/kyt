@@ -6,17 +6,17 @@ const STATE_COLORS: Record<string, string> = {
   online: 'text-green-400',
   driving: 'text-brand-blue',
   charging: 'text-yellow-400',
-  asleep: 'text-white/40',
+  asleep: 'text-ink/40',
   updating: 'text-purple-400',
   offline: 'text-red-400',
-  unknown: 'text-white/30',
+  unknown: 'text-ink/30',
 }
 
 function StepIcon({ done, active, error }: { done: boolean; active: boolean; error?: boolean }) {
   if (error) return <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
   if (done) return <CheckCircle className="w-5 h-5 text-green-400 shrink-0" />
   if (active) return <Loader2 className="w-5 h-5 text-brand-blue animate-spin shrink-0" />
-  return <Circle className="w-5 h-5 text-white/20 shrink-0" />
+  return <Circle className="w-5 h-5 text-ink/20 shrink-0" />
 }
 
 export default function TeslaConnect() {
@@ -68,10 +68,10 @@ export default function TeslaConnect() {
 
       {/* Setup wizard — only shown until fully registered */}
       {!statusLoading && needsSetup && (
-        <div className="bg-white/5 border border-white/10 rounded-xl p-5 space-y-4">
+        <div className="bg-ink/5 border border-ink/10 rounded-xl p-5 space-y-4">
           <div>
-            <h3 className="text-white font-semibold text-sm">Fleet API Setup</h3>
-            <p className="text-white/50 text-xs mt-0.5">One-time setup required before connecting your Tesla account.</p>
+            <h3 className="text-ink font-semibold text-sm">Fleet API Setup</h3>
+            <p className="text-ink/50 text-xs mt-0.5">One-time setup required before connecting your Tesla account.</p>
           </div>
 
           <div className="space-y-3">
@@ -79,10 +79,10 @@ export default function TeslaConnect() {
             <div className="flex items-start gap-3">
               <StepIcon done={!!status?.keys_generated} active={false} />
               <div>
-                <p className={`text-sm font-medium ${status?.keys_generated ? 'text-white/50 line-through' : 'text-white'}`}>
+                <p className={`text-sm font-medium ${status?.keys_generated ? 'text-ink/50 line-through' : 'text-ink'}`}>
                   Generate security keys
                 </p>
-                <p className="text-white/40 text-xs mt-0.5">Creates an EC key pair. Public key is served automatically.</p>
+                <p className="text-ink/40 text-xs mt-0.5">Creates an EC key pair. Public key is served automatically.</p>
               </div>
             </div>
 
@@ -90,10 +90,10 @@ export default function TeslaConnect() {
             <div className="flex items-start gap-3">
               <StepIcon done={!!status?.registered} active={setupMutation.isPending} error={setupMutation.isError} />
               <div className="flex-1">
-                <p className={`text-sm font-medium ${status?.registered ? 'text-white/50 line-through' : 'text-white'}`}>
+                <p className={`text-sm font-medium ${status?.registered ? 'text-ink/50 line-through' : 'text-ink'}`}>
                   Register with Tesla Fleet API
                 </p>
-                <p className="text-white/40 text-xs mt-0.5">Tesla verifies your domain and public key.</p>
+                <p className="text-ink/40 text-xs mt-0.5">Tesla verifies your domain and public key.</p>
                 {setupMutation.isError && (
                   <p className="text-red-400 text-xs mt-1">
                     {(setupMutation.error as { response?: { data?: { detail?: string } } })?.response?.data?.detail ?? 'Setup failed — check backend logs'}
@@ -106,10 +106,10 @@ export default function TeslaConnect() {
             <div className="flex items-start gap-3">
               <StepIcon done={hasVehicles} active={false} />
               <div>
-                <p className={`text-sm font-medium ${hasVehicles ? 'text-white/50 line-through' : 'text-white/50'}`}>
+                <p className={`text-sm font-medium ${hasVehicles ? 'text-ink/50 line-through' : 'text-ink/50'}`}>
                   Connect your Tesla account
                 </p>
-                <p className="text-white/40 text-xs mt-0.5">Authorise KYT to read your vehicle data.</p>
+                <p className="text-ink/40 text-xs mt-0.5">Authorise KYT to read your vehicle data.</p>
               </div>
             </div>
           </div>
@@ -140,8 +140,8 @@ export default function TeslaConnect() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-white font-semibold text-base">Tesla Account</h2>
-            <p className="text-white/50 text-sm mt-0.5">
+            <h2 className="text-ink font-semibold text-base">Tesla Account</h2>
+            <p className="text-ink/50 text-sm mt-0.5">
               {hasVehicles
                 ? `${vehicles.length} vehicle${vehicles.length !== 1 ? 's' : ''} connected`
                 : 'No vehicles connected'}
@@ -170,23 +170,23 @@ export default function TeslaConnect() {
           </div>
         </div>
 
-        {vehiclesLoading && <div className="text-white/40 text-sm">Loading vehicles…</div>}
+        {vehiclesLoading && <div className="text-ink/40 text-sm">Loading vehicles…</div>}
 
         {vehicles.map((v) => (
-          <div key={v.id} className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-lg bg-brand-dark border border-white/10 flex items-center justify-center">
+          <div key={v.id} className="bg-ink/5 border border-ink/10 rounded-xl p-4 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-lg bg-paper border border-ink/10 flex items-center justify-center">
               <BatteryMedium className="w-5 h-5 text-brand-blue" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-white font-medium truncate">{v.name ?? v.vin ?? `Car ${v.id}`}</p>
-              <p className="text-white/50 text-sm">{v.model ?? '—'} · {v.vin ?? '—'}</p>
+              <p className="text-ink font-medium truncate">{v.name ?? v.vin ?? `Car ${v.id}`}</p>
+              <p className="text-ink/50 text-sm">{v.model ?? '—'} · {v.vin ?? '—'}</p>
             </div>
             <div className="text-right shrink-0">
-              <p className={`text-sm font-medium capitalize ${STATE_COLORS[v.state] ?? 'text-white/40'}`}>
+              <p className={`text-sm font-medium capitalize ${STATE_COLORS[v.state] ?? 'text-ink/40'}`}>
                 {v.state}
               </p>
               {v.battery_level !== null && (
-                <p className="text-white/50 text-xs">{v.battery_level}%</p>
+                <p className="text-ink/50 text-xs">{v.battery_level}%</p>
               )}
             </div>
             {v.state === 'asleep' && (
@@ -194,7 +194,7 @@ export default function TeslaConnect() {
                 onClick={() => wakeMutation.mutate(v.id)}
                 disabled={wakeMutation.isPending}
                 title="Wake vehicle"
-                className="p-2 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors"
+                className="p-2 rounded-lg hover:bg-ink/10 text-ink/40 hover:text-ink transition-colors"
               >
                 <RotateCw className={`w-4 h-4 ${wakeMutation.isPending ? 'animate-spin' : ''}`} />
               </button>

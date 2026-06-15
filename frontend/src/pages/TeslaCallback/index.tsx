@@ -40,26 +40,26 @@ export default function TeslaCallbackPage() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="min-h-screen bg-brand-dark flex items-center justify-center">
+    <div className="min-h-screen bg-paper flex items-center justify-center">
       <div className="glass rounded-2xl p-8 w-full max-w-sm text-center">
         {status === 'loading' && (
           <>
             <Loader2 className="w-10 h-10 text-brand-blue animate-spin mx-auto mb-4" />
-            <p className="text-white text-lg font-semibold">Connecting Tesla account…</p>
+            <p className="text-ink text-lg font-semibold">Connecting Tesla account…</p>
           </>
         )}
         {status === 'success' && (
           <>
             <CheckCircle className="w-10 h-10 text-green-400 mx-auto mb-4" />
-            <p className="text-white text-lg font-semibold">{message}</p>
-            <p className="text-white/50 text-sm mt-2">Redirecting to settings…</p>
+            <p className="text-ink text-lg font-semibold">{message}</p>
+            <p className="text-ink/50 text-sm mt-2">Redirecting to settings…</p>
           </>
         )}
         {status === 'error' && (
           <>
             <XCircle className="w-10 h-10 text-red-400 mx-auto mb-4" />
-            <p className="text-white text-lg font-semibold">Connection failed</p>
-            <p className="text-white/60 text-sm mt-2">{message}</p>
+            <p className="text-ink text-lg font-semibold">Connection failed</p>
+            <p className="text-ink/60 text-sm mt-2">{message}</p>
             <button
               onClick={() => navigate('/settings', { replace: true })}
               className="mt-6 w-full bg-brand-blue hover:bg-blue-600 text-white font-semibold py-2.5 rounded-lg transition-colors"

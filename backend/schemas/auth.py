@@ -14,6 +14,9 @@ class UserOut(BaseModel):
     email: str
     is_active: bool
     is_superuser: bool
+    display_name: str | None = None
+    theme: str = "system"
+    must_change_password: bool = False
     created_at: datetime
     last_login: datetime | None = None
 

@@ -3,16 +3,38 @@
 @tailwind utilities;
 
 @layer base {
+  /* Light theme (default) */
+  :root {
+    --ink: 15 23 42;      /* slate-900 — foreground */
+    --paper: 248 250 252; /* slate-50  — background */
+    --glass-bg: 255 255 255;
+    --glass-border: 15 23 42;
+  }
+  /* Dark theme */
+  .dark {
+    --ink: 255 255 255;
+    --paper: 13 27 42;    /* #0D1B2A */
+    --glass-bg: 255 255 255;
+    --glass-border: 255 255 255;
+  }
+
   * {
-    @apply border-neutral-200;
+    @apply border-ink/10;
   }
   body {
-    @apply bg-neutral-50 text-neutral-900 font-sans antialiased;
+    @apply bg-paper text-ink font-sans antialiased;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-white/10 backdrop-blur-md border border-white/20;
+    background-color: rgb(var(--glass-bg) / 0.06);
+    border: 1px solid rgb(var(--glass-border) / 0.12);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  .dark .glass {
+    background-color: rgb(var(--glass-bg) / 0.10);
+    border-color: rgb(var(--glass-border) / 0.20);
   }
 }
